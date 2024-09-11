@@ -20,6 +20,7 @@ module.exports = async (env, options) => {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       report_fraud: ["./src/report_fraud/report_fraud.ts", "./src/report_fraud/report_fraud.html"],
       commands: "./src/commands/commands.ts",
+      options: "./src/options/options.ts",
     },
     output: {
       clean: true,
@@ -82,6 +83,11 @@ module.exports = async (env, options) => {
         filename: "commands.html",
         template: "./src/commands/commands.html",
         chunks: ["polyfill", "commands"],
+      }),
+      new HtmlWebpackPlugin({
+        filename: "options.html",
+        template: "./src/options/options.html",
+        chunks: ["polyfill", "options"],
       }),
     ],
     devServer: {

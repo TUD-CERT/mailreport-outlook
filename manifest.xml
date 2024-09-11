@@ -74,7 +74,22 @@
                     <bt:Image size="80" resid="Icon.80x80"/>
                   </Icon>
                   <Action xsi:type="ExecuteFunction">
-                    <FunctionName>action</FunctionName>
+                    <FunctionName>showOptions</FunctionName>
+                  </Action>
+                </Control>
+                <Control xsi:type="Button" id="OptionsButton">
+                  <Label resid="OptionsButton.Label"/>
+                  <Supertip>
+                    <Title resid="OptionsButton.Label"/>
+                    <Description resid="OptionsButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="Options.Url"/>
                   </Action>
                 </Control>
               </Group>
@@ -92,15 +107,18 @@
       <bt:Urls>
         <bt:Url id="Commands.Url" DefaultValue="https://localhost:3000/commands.html"/>
         <bt:Url id="ReportFraud.Url" DefaultValue="https://localhost:3000/report_fraud.html"/>
+        <bt:Url id="Options.Url" DefaultValue="https://localhost:3000/options.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="E-Mail Report Button"/>
         <bt:String id="FraudReportButton.Label" DefaultValue="Report as suspected phishing/fraud"/>
         <bt:String id="SpamReportButton.Label" DefaultValue="Report as spam"/>
+        <bt:String id="OptionsButton.Label" DefaultValue="Configure..."/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="FraudReportButton.Tooltip" DefaultValue="Report this e-mail as potentially malicious and move it to the trash."/>
         <bt:String id="SpamReportButton.Tooltip" DefaultValue="Report this e-mail as spam and move it to the junk folder."/>
+        <bt:String id="OptionsButton.Tooltip" DefaultValue="Change the e-mail report add-in configuration."/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

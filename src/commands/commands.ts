@@ -1,26 +1,17 @@
-/* global Office */
-Office.onReady(() => {
-  // If needed, Office.js is ready to be called.
-});
+/* global Office, window */
 
-/**
- * Shows a notification when the add-in command is executed.
- * @param event
- */
-function action(event: Office.AddinCommands.Event) {
-  const message: Office.NotificationMessageDetails = {
-    type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
-    message: "Performed action.",
-    icon: "Icon.80x80",
-    persistent: true,
-  };
+// Must be run each time a new page is loaded.
+Office.onReady();
 
-  // Show a notification message.
-  Office.context.mailbox.item.notificationMessages.replaceAsync("ActionPerformanceNotification", message);
+function showOptions(event: Office.AddinCommands.Event) {
+  //const url = new URI("options.html").absoluteTo(window.location).toString();
+  const url = new URL("options.html", window.location).toString();
+  const dialogOptions = { width: 20, height: 40, displayInIframe: true };
+  Office.context.ui.displayDialogAsync(url, dialogOptions, () => {});
 
   // Be sure to indicate when the add-in command function is complete.
-  event.completed();
+  //event.completed();
 }
 
 // Register the function with Office.
-Office.actions.associate("action", action);
+Office.actions.associate("showOptions", showOptions);

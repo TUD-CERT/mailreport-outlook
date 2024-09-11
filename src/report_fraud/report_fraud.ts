@@ -1,4 +1,5 @@
 /* global console, document, DOMParser, fetch, Office */
+import { getSettings, ReportAction } from "../settings";
 
 enum BodyType {
   PLAIN,
@@ -38,7 +39,6 @@ async function parseMessage(email: Office.MessageRead): Promise<Message> {
     });
   });
   // Retrieve raw email via EWS
-  const ewsId = Office.context.mailbox.item.itemId;
   const request =
     '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages" xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">' +
     '  <soap:Header><t:RequestServerVersion Version="Exchange2013" /></soap:Header>' +
@@ -49,9 +49,7 @@ async function parseMessage(email: Office.MessageRead): Promise<Message> {
     "        <t:IncludeMimeContent>true</t:IncludeMimeContent>" +
     "      </m:ItemShape >" +
     "      <m:ItemIds>" +
-    '        <t:ItemId Id="' +
-    ewsId +
-    '" />' +
+    `        <t:ItemId Id="${email.itemId}" />` +
     "      </m:ItemIds>" +
     "    </m:GetItem>" +
     "  </soap:Body>" +
@@ -142,28 +140,67 @@ async function sendSMTPReport(
     "    </m:CreateItem>" +
     "  </soap:Body>" +
     "</soap:Envelope>";
-  return await new Promise<boolean>((resolve) => {
+  return await new Promise<void>((resolve, reject) => {
     Office.context.mailbox.makeEwsRequestAsync(request, function (result) {
-      console.log("response", result.value);
       const parser = new DOMParser();
       const doc = parser.parseFromString(result.value, "text/xml");
       const values = doc.getElementsByTagName("m:ResponseCode");
-      resolve(values[0].textContent === "NoError");
-      resolve(true);
+      if (values[0].textContent === "NoError") resolve();
+      else reject();
     });
   });
 }
 
-export async function sendFraudReport() {
-  const message = await parseMessage(Office.context.mailbox.item);
+async function moveMessageTo(email: Office.MessageRead, folder: ReportAction) {
+  // Move email via EWS
+  let folderId = "";
+  switch (folder) {
+    case ReportAction.JUNK:
+      folderId = "junkemail";
+      break;
+    case ReportAction.TRASH:
+      folderId = "deleteditems";
+      break;
+    case ReportAction.KEEP:
+      return;
+  }
+  console.log(`Moving message ${email.itemId} to ${folder} folder`);
+  const request =
+    '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages" xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">' +
+    '  <soap:Header><t:RequestServerVersion Version="Exchange2013" /></soap:Header>' +
+    "  <soap:Body>" +
+    "    <m:MoveItem>" +
+    "      <m:ToFolderId>" +
+    `        <t:DistinguishedFolderId Id="${folderId}"/>` +
+    "      </m:ToFolderId >" +
+    "      <m:ItemIds>" +
+    `        <t:ItemId Id="${email.itemId}" />` +
+    "      </m:ItemIds>" +
+    "    </m:MoveItem>" +
+    "  </soap:Body>" +
+    "</soap:Envelope>";
+  return await new Promise<void>((resolve, reject) => {
+    Office.context.mailbox.makeEwsRequestAsync(request, function (result) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(result.value, "text/xml");
+      const values = doc.getElementsByTagName("m:ResponseCode");
+      if (values[0].textContent === "NoError") resolve();
+      else reject();
+    });
+  });
+}
+
+export async function reportMail() {
+  const mail = Office.context.mailbox.item;
+  const message = await parseMessage(mail);
   const comment = (<HTMLTextAreaElement>document.getElementById("reportComment")).value;
-  console.log("reported message", message);
   await sendSMTPReport("cert@exchg.cert", "Phishing Report", 2, message, comment.length > 0 ? comment : null);
+  await moveMessageTo(mail, getSettings().report_action);
   Office.context.ui.closeContainer();
 }
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook) {
-    document.getElementById("sendFraudReport").onclick = sendFraudReport;
+    document.getElementById("sendFraudReport").onclick = reportMail;
   }
 });
