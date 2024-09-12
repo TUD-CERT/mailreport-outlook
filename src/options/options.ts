@@ -1,5 +1,6 @@
 /* global console, document, fabric, Office */
-import { getSettings, ReportAction, setSettings, Settings } from "../settings";
+import { ReportAction } from "../models";
+import { getSettings, setSettings, Settings } from "../settings";
 
 /**
  * Updates the currently selected value of a fabric <select> element.
@@ -16,7 +17,6 @@ function updateSelect(selectElement: HTMLElement, newValue: string) {
 }
 
 /**
- * 
  * Returns a settings object created from the currently selected form values.
  */
 function getFormSettings(): Settings {

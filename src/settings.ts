@@ -1,21 +1,10 @@
 /* global console, Office */
 import defaultSettings from "./defaults.json";
+import { ReportAction } from "./models";
 
 /**
  * Shared access to the add-in's settings, persisted via Office.RoamingSettings
  */
-
-export enum ReportAction {
-  JUNK = "junk",
-  TRASH = "trash",
-  KEEP = "keep",
-}
-
-export enum Transport {
-  HTTP = "http",
-  SMTP = "smtp",
-  HTTPSMTP = "http+smtp",
-}
 
 export class Settings {
   report_action: ReportAction = ReportAction.JUNK;
