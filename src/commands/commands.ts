@@ -1,17 +1,17 @@
-/* global Office, window */
+/* global Office */
+import { moveMessageTo, sendSMTPReport } from "../ews";
+import { ReportAction } from "../models";
+import { parseMessage } from "../reporting";
 
 // Must be run each time a new page is loaded.
 Office.onReady();
 
-function showOptions(event: Office.AddinCommands.Event) {
-  //const url = new URI("options.html").absoluteTo(window.location).toString();
-  const url = new URL("options.html", window.location).toString();
-  const dialogOptions = { width: 20, height: 40, displayInIframe: true };
-  Office.context.ui.displayDialogAsync(url, dialogOptions, () => {});
-
-  // Be sure to indicate when the add-in command function is complete.
-  //event.completed();
+async function reportSpam(event: Office.AddinCommands.Event) {
+  const mail = Office.context.mailbox.item;
+  const message = await parseMessage(mail);
+  await sendSMTPReport("cert@exchg.cert", "Spam Report", 2, message, null);
+  await moveMessageTo(mail, ReportAction.JUNK);
+  event.completed();
 }
 
-// Register the function with Office.
-Office.actions.associate("showOptions", showOptions);
+Office.actions.associate("reportSpam", reportSpam);

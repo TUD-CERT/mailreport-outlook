@@ -86,7 +86,7 @@
                         <bt:Image size="80" resid="Spam.80x80"/>
                       </Icon>
                       <Action xsi:type="ExecuteFunction">
-                        <FunctionName>showOptions</FunctionName>
+                        <FunctionName>reportSpam</FunctionName>
                       </Action>
                     </Item>
                     <Item id="Options">
@@ -135,9 +135,9 @@
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Security"/>
         <bt:String id="MenuButton.Label" DefaultValue="Report E-Mail"/>
-        <bt:String id="FraudReport.Label" DefaultValue="Report as phishing/fraud"/>
+        <bt:String id="FraudReport.Label" DefaultValue="Report as phishing/fraud..."/>
         <bt:String id="SpamReport.Label" DefaultValue="Report as spam"/>
-        <bt:String id="Options.Label" DefaultValue="Configure"/>
+        <bt:String id="Options.Label" DefaultValue="Configure..."/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="MenuButton.Tooltip" DefaultValue="Show reporting options."/>
