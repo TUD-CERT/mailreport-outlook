@@ -1,4 +1,5 @@
-/* global console, document, fabric, Office */
+/* global console, document, fabric, HTMLElement, HTMLSelectElement, Office */
+import { localizeDocument } from "../i18n";
 import { ReportAction } from "../models";
 import { getSettings, setSettings, Settings } from "../settings";
 
@@ -34,6 +35,7 @@ function restoreFormSettings(settings: Settings) {
 }
 
 Office.onReady(() => {
+  localizeDocument();
   const dropdownHTMLElements = document.querySelectorAll(".ms-Dropdown"),
     submitButon = document.getElementById("mailreport-options-save");
 

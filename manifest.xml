@@ -4,8 +4,12 @@
   <Version>1.0.0.0</Version>
   <ProviderName>TUD-CERT</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="E-Mail Report Button"/>
-  <Description DefaultValue="Adds an e-mail report button."/>
+  <DisplayName DefaultValue="E-Mail Report Button">
+    <Override Locale="de-DE" Value="E-Mail-Melde-Button"/>
+  </DisplayName>
+  <Description DefaultValue="Adds a phishing report button to the toolbar.">
+    <Override Locale="de-DE" Value="Fügt einen Phishing-Meldebutton zur Toolbar hinzu."/>
+  </Description>
   <IconUrl DefaultValue="https://localhost:3000/assets/app_64.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/app_128.png"/>
   <SupportUrl DefaultValue="https://mailsecurity.cert.tu-dresden.de"/>
@@ -133,17 +137,35 @@
         <bt:Url id="Options.Url" DefaultValue="https://localhost:3000/options.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GroupLabel" DefaultValue="Security"/>
-        <bt:String id="MenuButton.Label" DefaultValue="Report E-Mail"/>
-        <bt:String id="FraudReport.Label" DefaultValue="Report as phishing/fraud..."/>
-        <bt:String id="SpamReport.Label" DefaultValue="Report as spam"/>
-        <bt:String id="Options.Label" DefaultValue="Configure..."/>
+        <bt:String id="GroupLabel" DefaultValue="Security">
+          <bt:Override Locale="de-DE" Value="Sicherheit"/>
+        </bt:String>
+        <bt:String id="MenuButton.Label" DefaultValue="Report E-Mail">
+          <bt:Override Locale="de-DE" Value="E-Mail melden"/>
+        </bt:String>
+        <bt:String id="FraudReport.Label" DefaultValue="Report as phishing/fraud...">
+          <bt:Override Locale="de-DE" Value="Als Phishing/Betrug melden..."/>
+        </bt:String>
+        <bt:String id="SpamReport.Label" DefaultValue="Report as spam">
+          <bt:Override Locale="de-DE" Value="Als Spam melden"/>
+        </bt:String>
+        <bt:String id="Options.Label" DefaultValue="Configure...">
+          <bt:Override Locale="de-DE" Value="Konfigurieren..."/>
+        </bt:String>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="MenuButton.Tooltip" DefaultValue="Show reporting options."/>
-        <bt:String id="FraudReport.Tooltip" DefaultValue="Report this e-mail as potentially malicious."/>
-        <bt:String id="SpamReport.Tooltip" DefaultValue="Report this e-mail as spam."/>
-        <bt:String id="Options.Tooltip" DefaultValue="Change the reporting configuration."/>
+        <bt:String id="MenuButton.Tooltip" DefaultValue="Initiates the reporting process for unwanted e-mails.">
+          <bt:Override Locale="de-DE" Value="Iniitiert den Meldeprozess für unerwünschte E-Mails."/>
+        </bt:String>
+        <bt:String id="FraudReport.Tooltip" DefaultValue="Report this e-mail as potentially malicious.">
+          <bt:Override Locale="de-DE" Value="Meldet die ausgewählte E-Mail als potentiell bösartig."/>
+        </bt:String>
+        <bt:String id="SpamReport.Tooltip" DefaultValue="Report this e-mail as spam.">
+          <bt:Override Locale="de-DE" Value="Meldet die ausgewählte E-Mail als Spam."/>
+        </bt:String>
+        <bt:String id="Options.Tooltip" DefaultValue="View and change reporting plugin configuration.">
+          <bt:Override Locale="de-DE" Value="Anzeigen und Ändern der Konfiguration des Melde-Plugins."/>
+        </bt:String>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

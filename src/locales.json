@@ -1,0 +1,25 @@
+{
+    "en-US": {
+        "save": "Save",
+        "optionsHeader": "Configuration",
+        "optionsActionLabel": "After reporting an E-Mail,",
+        "optionsActionJunk": "move it to the junk folder",
+        "optionsActionTrash": "delete it (move to the trash folder)",
+        "optionsActionKeep": "keep it",
+        "reportCommentPrompt": "The E-Mail will be forwarded to your security team.",
+        "reportCommentPlaceholder": "Optional comment",
+        "reportSubmit": "Send report"
+    
+    },
+    "de-DE": {
+        "save": "Speichern",
+        "optionsHeader": "Konfiguration",
+        "optionsActionLabel": "Nachdem eine E-Mail gemeldet wurde,",
+        "optionsActionJunk": "verschiebe sie in das Junk-Verzeichnis",
+        "optionsActionTrash": "verschiebe sie in den Papierkorb",
+        "optionsActionKeep": "behalte sie",
+        "reportCommentPrompt": "Die E-Mail wird an Ihr IT-Sicherheitsteam weitergeleitet.",
+        "reportCommentPlaceholder": "Kommentar (optional)",
+        "reportSubmit": "Meldung abschicken"
+    }
+}
