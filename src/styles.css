@@ -1,0 +1,14 @@
+ body {
+  margin: 0 8px 0 0;
+ }
+
+ button {
+  width: 100%;
+ }
+ 
+textarea {
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  resize: none;
+  width: 100%;
+}

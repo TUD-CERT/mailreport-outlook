@@ -2,6 +2,7 @@
 import { localizeDocument } from "../i18n";
 import { ReportAction } from "../models";
 import { getSettings, setSettings, Settings } from "../settings";
+import { fixOWAPadding } from "../utils";
 
 /**
  * Updates the currently selected value of a fabric <select> element.
@@ -36,6 +37,7 @@ function restoreFormSettings(settings: Settings) {
 
 Office.onReady(() => {
   localizeDocument();
+  fixOWAPadding();
   const dropdownHTMLElements = document.querySelectorAll(".ms-Dropdown"),
     submitButon = document.getElementById("mailreport-options-save");
 

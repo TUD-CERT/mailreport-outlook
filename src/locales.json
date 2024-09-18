@@ -8,6 +8,7 @@
         "optionsActionKeep": "keep it",
         "reportCommentPrompt": "The E-Mail will be forwarded to your security team.",
         "reportCommentPlaceholder": "Optional comment",
+        "reportHeader": "Report as phishing/fraud",
         "reportSubmit": "Send report"
     
     },
@@ -20,6 +21,7 @@
         "optionsActionKeep": "behalte sie",
         "reportCommentPrompt": "Die E-Mail wird an Ihr IT-Sicherheitsteam weitergeleitet.",
         "reportCommentPlaceholder": "Kommentar (optional)",
+        "reportHeader": "Als Phishing/Betrug melden",
         "reportSubmit": "Meldung abschicken"
     }
 }

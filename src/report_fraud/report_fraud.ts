@@ -3,6 +3,7 @@ import { moveMessageTo, sendSMTPReport } from "../ews";
 import { localizeDocument } from "../i18n";
 import { parseMessage } from "../reporting";
 import { getSettings } from "../settings";
+import { fixOWAPadding } from "../utils";
 
 async function reportFraud() {
   const mail = Office.context.mailbox.item;
@@ -15,6 +16,7 @@ async function reportFraud() {
 
 Office.onReady((info) => {
   localizeDocument();
+  fixOWAPadding();
   if (info.host === Office.HostType.Outlook) {
     document.getElementById("sendFraudReport").onclick = reportFraud;
   }
