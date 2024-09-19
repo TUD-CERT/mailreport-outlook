@@ -90,13 +90,13 @@ export async function sendSMTPReport(
     "    </m:CreateItem>" +
     "  </soap:Body>" +
     "</soap:Envelope>";
-  return await new Promise<void>((resolve, reject) => {
+  return await new Promise<boolean>((resolve) => {
     Office.context.mailbox.makeEwsRequestAsync(request, function (result) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(result.value, "text/xml");
       const values = doc.getElementsByTagName("m:ResponseCode");
-      if (values[0].textContent === "NoError") resolve();
-      else reject();
+      if (values[0].textContent === "NoError") resolve(true);
+      else resolve(false);
     });
   });
 }
@@ -128,13 +128,13 @@ export async function moveMessageTo(email: Office.MessageRead, folder: ReportAct
     "    </m:MoveItem>" +
     "  </soap:Body>" +
     "</soap:Envelope>";
-  return await new Promise<void>((resolve, reject) => {
+  return await new Promise<boolean>((resolve) => {
     Office.context.mailbox.makeEwsRequestAsync(request, function (result) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(result.value, "text/xml");
       const values = doc.getElementsByTagName("m:ResponseCode");
-      if (values[0].textContent === "NoError") resolve();
-      else reject();
+      if (values[0].textContent === "NoError") resolve(true);
+      else resolve(false);
     });
   });
 }
