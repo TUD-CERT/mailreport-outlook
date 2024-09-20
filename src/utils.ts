@@ -12,5 +12,6 @@ export function encodeHTML(str: string): string {
  * padding to the task pane content to match the padding of the desktop version.
  */
 export function fixOWAPadding() {
-  if (Office.context.mailbox.diagnostics.hostName === "OutlookWebApp") document.body.style.marginLeft = "8px";
+  if (Office.context.mailbox.diagnostics.hostName === "OutlookWebApp")
+    document.documentElement.style.marginLeft = "8px";
 }
