@@ -1,6 +1,7 @@
 /* global document, HTMLTextAreaElement, Office, setTimeout */
 import { moveMessageTo, sendSMTPReport } from "../ews";
-import { localizeDocument } from "../i18n";
+import { localizeToken, localizeDocument } from "../i18n";
+import { ReportAction } from "../models";
 import { parseMessage } from "../reporting";
 import { getSettings } from "../settings";
 import { fixOWAPadding } from "../utils";
@@ -31,6 +32,16 @@ async function reportFraud() {
 
 Office.onReady((info) => {
   localizeDocument();
+  // Display the reporting action depending on current settings
+  const $reportAction = document.getElementById("mailreport-fraud-action");
+  switch (getSettings().report_action) {
+    case ReportAction.JUNK:
+      $reportAction.textContent = localizeToken("__MSG_reportCommentJunk__");
+      break;
+    case ReportAction.TRASH:
+      $reportAction.textContent = localizeToken("__MSG_reportCommentTrash__");
+      break;
+  }
   fixOWAPadding();
   if (info.host === Office.HostType.Outlook) {
     document.getElementById("sendFraudReport").onclick = reportFraud;
