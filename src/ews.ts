@@ -111,7 +111,7 @@ export async function moveMessageTo(email: Office.MessageRead, folder: ReportAct
       folderId = "deleteditems";
       break;
     case ReportAction.KEEP:
-      return;
+      return true;
   }
   console.log(`Moving message ${email.itemId} to ${folder} folder`);
   const request =
