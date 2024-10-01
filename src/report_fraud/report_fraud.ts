@@ -4,7 +4,7 @@ import { localizeToken, localizeDocument } from "../i18n";
 import { ReportAction } from "../models";
 import { parseMessage } from "../reporting";
 import { getSettings } from "../settings";
-import { fixOWAPadding } from "../utils";
+import { fixOWAPadding, sleep } from "../utils";
 
 function showView(selector: string) {
   const $unselected = document.querySelectorAll(`div.view:not(${selector})`);
@@ -26,7 +26,7 @@ async function reportFraud() {
   );
   const successMove = await moveMessageTo(mail, getSettings().report_action);
   showView(successReport && successMove ? "#mailreport-fraud-success" : "#mailreport-fraud-error");
-  await new Promise((r) => setTimeout(r, successReport && successMove ? 2000 : 5000));
+  await sleep(successReport && successMove ? 2000 : 5000);
   Office.context.ui.closeContainer();
 }
 

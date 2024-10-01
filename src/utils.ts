@@ -1,4 +1,4 @@
-/* global document, Office */
+/* global document, Office, setTimeout */
 /**
  * Encodes various characters to their safe HTML counterparts. Used to prevent HTML interpretation of
  * E-Mail headers such as "Name <name@example.com>".
@@ -14,4 +14,11 @@ export function encodeHTML(str: string): string {
 export function fixOWAPadding() {
   if (Office.context.mailbox.diagnostics.hostName === "OutlookWebApp")
     document.documentElement.style.marginLeft = "8px";
+}
+
+/**
+ * Pauses execution for a set amout of time.
+ */
+export async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
