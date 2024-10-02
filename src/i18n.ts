@@ -47,4 +47,5 @@ function updateSubtree(node: Node) {
 
 export function localizeDocument() {
   updateSubtree(document);
+  document.body.classList.remove("hide");
 }
