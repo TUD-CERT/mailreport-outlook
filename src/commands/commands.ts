@@ -1,17 +1,12 @@
 /* global Office */
-import { moveMessageTo, sendSMTPReport } from "../ews";
-import { ReportAction } from "../models";
-import { parseMessage } from "../reporting";
+import { reportSpam } from "../reporting";
 
 // Must be run each time a new page is loaded.
 Office.onReady();
 
-async function reportSpam(event: Office.AddinCommands.Event) {
-  const mail = Office.context.mailbox.item;
-  const message = await parseMessage(mail);
-  await sendSMTPReport("cert@exchg.cert", "Spam Report", 2, message, null);
-  await moveMessageTo(mail, ReportAction.JUNK);
+async function handleSpamReport(event: Office.AddinCommands.Event) {
+  await reportSpam(Office.context.mailbox.item);
   event.completed();
 }
 
-Office.actions.associate("reportSpam", reportSpam);
+Office.actions.associate("reportSpam", handleSpamReport);

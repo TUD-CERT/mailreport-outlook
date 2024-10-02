@@ -1,8 +1,10 @@
 /* global Office */
 import { BodyType, Message } from "./models";
-import { getRawEmail } from "./ews";
+import { getRawEmail, moveMessageTo, sendSMTPReport } from "./ews";
+import { ReportAction } from "./models";
+import { getSettings } from "./settings";
 
-export async function parseMessage(email: Office.MessageRead): Promise<Message> {
+async function parseMessage(email: Office.MessageRead): Promise<Message> {
   // The MailBox API doesn't permit us to programatically determine the original MIME content structure.
   // Therefore, we always coalesce content to HTML.
 
@@ -37,4 +39,23 @@ export async function parseMessage(email: Office.MessageRead): Promise<Message> 
   result.previewType = BodyType.HTML;
   result.raw = await getRawEmail(email.itemId);
   return result;
+}
+
+export async function reportFraud(mail: Office.MessageRead, comment: string) {
+  const message = await parseMessage(mail);
+  const successReport = await sendSMTPReport(
+    "cert@exchg.cert",
+    "Phishing Report",
+    2,
+    message,
+    comment.length > 0 ? comment : null
+  );
+  const successMove = await moveMessageTo(mail, getSettings().report_action);
+  return successReport && successMove;
+}
+
+export async function reportSpam(mail: Office.MessageRead) {
+  const message = await parseMessage(mail);
+  await sendSMTPReport("cert@exchg.cert", "Spam Report", 2, message, null);
+  await moveMessageTo(mail, ReportAction.JUNK);
 }

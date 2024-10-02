@@ -1,8 +1,7 @@
-/* global document, HTMLTextAreaElement, Office, setTimeout */
-import { moveMessageTo, sendSMTPReport } from "../ews";
+/* global document, HTMLTextAreaElement, Office */
 import { localizeToken, localizeDocument } from "../i18n";
 import { ReportAction } from "../models";
-import { parseMessage } from "../reporting";
+import { reportFraud } from "../reporting";
 import { getSettings } from "../settings";
 import { fixOWAPadding, sleep } from "../utils";
 
@@ -12,21 +11,12 @@ function showView(selector: string) {
   for (const e of $unselected) e.classList.add("hide");
 }
 
-async function reportFraud() {
+async function handleFraudReport() {
   showView("#mailreport-fraud-pending");
-  const mail = Office.context.mailbox.item;
-  const message = await parseMessage(mail);
   const comment = (<HTMLTextAreaElement>document.getElementById("reportComment")).value;
-  const successReport = await sendSMTPReport(
-    "cert@exchg.cert",
-    "Phishing Report",
-    2,
-    message,
-    comment.length > 0 ? comment : null
-  );
-  const successMove = await moveMessageTo(mail, getSettings().report_action);
-  showView(successReport && successMove ? "#mailreport-fraud-success" : "#mailreport-fraud-error");
-  await sleep(successReport && successMove ? 2000 : 5000);
+  const success = await reportFraud(Office.context.mailbox.item, comment);
+  showView(success ? "#mailreport-fraud-success" : "#mailreport-fraud-error");
+  await sleep(success ? 2000 : 5000);
   Office.context.ui.closeContainer();
 }
 
@@ -44,6 +34,6 @@ Office.onReady((info) => {
   }
   fixOWAPadding();
   if (info.host === Office.HostType.Outlook) {
-    document.getElementById("sendFraudReport").onclick = reportFraud;
+    document.getElementById("sendFraudReport").onclick = handleFraudReport;
   }
 });
