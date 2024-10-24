@@ -3,11 +3,12 @@ import defaultSettings from "./defaults.json";
 import { ReportAction } from "./models";
 
 /**
- * Shared access to the add-in's settings, persisted via Office.RoamingSettings
+ * Provides shared access to the add-in's settings, persisted via Office.RoamingSettings.
  */
 
 export class Settings {
-  report_action: ReportAction = ReportAction.JUNK;
+  report_action: ReportAction;
+  smtp_to: string;
 }
 
 /**
@@ -15,7 +16,7 @@ export class Settings {
  */
 export function getSettings(): Settings {
   const settings = new Settings();
-  for (const key in settings) {
+  for (const key in defaultSettings) {
     settings[key] = Office.context.roamingSettings.get(key) ?? defaultSettings[key];
   }
   return settings;

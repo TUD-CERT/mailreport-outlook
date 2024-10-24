@@ -1,8 +1,9 @@
 /* eslint-disable no-undef */
-
 const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const fs = require("fs");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
 
 const urlDev = "https://localhost:3000/";
 const urlProd = "https://mailsecurity.cert.tu-dresden.de/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
@@ -12,7 +13,59 @@ async function getHttpsOptions() {
   return { ca: httpsOptions.ca, key: httpsOptions.key, cert: httpsOptions.cert };
 }
 
+/**
+ * Performs a deep update of a template object with values from overrides. Returns the updated template.
+ */
+function updateTemplate(template, overrides) {
+  Object.entries(overrides).forEach(([key, value]) => {
+    if (value instanceof Object) {
+      if (!(key in template)) template[key] = {};
+      updateTemplate(template[key], value);
+    } else template[key] = value;
+  });
+  return template;
+}
+
+class ConfigGeneratorPlugin {
+  constructor(deployment) {
+    this.deployment = deployment;
+  }
+
+  apply(compiler) {
+    compiler.hooks.environment.tap("ConfigGeneratorPlugin", () => {
+      const deploymentPath = path.join(__dirname, "configs", this.deployment);
+      if (!fs.existsSync(deploymentPath)) throw new Error(`Error: Deployment ${this.deployment} not found`);
+      console.log(`Deployment: ${this.deployment}`);
+      const overrides = JSON.parse(fs.readFileSync(path.join(deploymentPath, "overrides.json")));
+
+      // defaults.json
+      const cfgOutputPath = path.join(__dirname, "src", "defaults.json");
+      console.log(`Generating ${cfgOutputPath}`);
+      const templateConfig = JSON.parse(fs.readFileSync(path.join(__dirname, "src", "templates", "defaults.tpl")));
+      const resultConfig = updateTemplate(templateConfig, overrides.defaults);
+      fs.writeFileSync(cfgOutputPath, JSON.stringify(resultConfig));
+
+      // locales.json
+      const resultLocales = {};
+      const localesOutputPath = path.join(__dirname, "src", "locales.json");
+      console.log(`Generating ${localesOutputPath}`);
+      const templateLocales = path.join(__dirname, "src", "templates", "locales");
+      fs.readdirSync(templateLocales).forEach((locale) => {
+        const localePath = path.join(templateLocales, locale);
+        if (fs.statSync(localePath).isDirectory()) {
+          const localeContent = JSON.parse(fs.readFileSync(path.join(localePath, "messages.json")));
+          if ("locales" in overrides && locale in overrides.locales)
+            updateTemplate(localeContent, overrides.locales[locale]);
+          resultLocales[locale] = localeContent;
+        }
+      });
+      fs.writeFileSync(localesOutputPath, JSON.stringify(resultLocales));
+    });
+  }
+}
+
 module.exports = async (env, options) => {
+  if (!("config" in env)) throw new Error("Error: No deployment config supplied, use --env config=<config_name>");
   const dev = options.mode === "development";
   const config = {
     devtool: "source-map",
@@ -89,6 +142,7 @@ module.exports = async (env, options) => {
         template: "./src/options/options.html",
         chunks: ["polyfill", "options"],
       }),
+      new ConfigGeneratorPlugin(env.config),
     ],
     devServer: {
       headers: {

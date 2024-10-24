@@ -1,0 +1,17 @@
+{
+    "save": "Save",
+    "optionsHeader": "Configuration",
+    "optionsActionLabel": "After reporting an E-Mail,",
+    "optionsActionJunk": "move it to the junk folder",
+    "optionsActionTrash": "delete it (move to the trash folder)",
+    "optionsActionKeep": "keep it",
+    "reportCommentPrompt": "The E-Mail will be forwarded to your security team.",
+    "reportCommentJunk": "It will then be moved to your junk folder.",
+    "reportCommentTrash": "It will then be deleted.",
+    "reportCommentPlaceholder": "Optional comment",
+    "reportHeader": "Report as phishing/fraud",
+    "reportSubmit": "Send report",
+    "reportWait": "Sending report",
+    "reportSuccess": "Thanks for your report!",
+    "reportError": "Reporting failed, please try again later."
+}

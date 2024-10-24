@@ -1,0 +1,13 @@
+{
+    "defaults": {
+        "smtp_to": "cert@exchg.cert"
+    },
+    "locales": {
+        "en-US": {
+            "reportCommentPrompt": "The E-Mail will be forwarded to your SOC."
+        },
+        "de-DE": {
+            "reportCommentPrompt": "Die E-Mail wird an Ihr SOC weitergeleitet."
+        }
+    }
+}

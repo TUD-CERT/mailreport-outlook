@@ -1,0 +1,17 @@
+{
+    "save": "Speichern",
+    "optionsHeader": "Konfiguration",
+    "optionsActionLabel": "Nachdem eine E-Mail gemeldet wurde,",
+    "optionsActionJunk": "verschiebe sie in das Junk-Verzeichnis",
+    "optionsActionTrash": "verschiebe sie in den Papierkorb",
+    "optionsActionKeep": "behalte sie",
+    "reportCommentPrompt": "Die E-Mail wird an Ihr IT-Sicherheitsteam weitergeleitet.",
+    "reportCommentJunk": "Sie wird anschließend in Ihr Junk-Verzeichnis verschoben.",
+    "reportCommentTrash": "Sie wird anschließend gelöscht.",
+    "reportCommentPlaceholder": "Kommentar (optional)",
+    "reportHeader": "Als Phishing/Betrug melden",
+    "reportSubmit": "Meldung abschicken",
+    "reportWait": "Melde",
+    "reportSuccess": "Vielen Dank für Ihre Meldung",
+    "reportError": "Meldung konnte nicht versendet werden, bitte versuchen Sie es später erneut."
+}

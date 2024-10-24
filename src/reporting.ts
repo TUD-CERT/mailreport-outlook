@@ -42,20 +42,22 @@ async function parseMessage(email: Office.MessageRead): Promise<Message> {
 }
 
 export async function reportFraud(mail: Office.MessageRead, comment: string) {
-  const message = await parseMessage(mail);
+  const message = await parseMessage(mail),
+    settings = getSettings();
   const successReport = await sendSMTPReport(
-    "cert@exchg.cert",
+    settings.smtp_to,
     "Phishing Report",
     2,
     message,
     comment.length > 0 ? comment : null
   );
-  const successMove = await moveMessageTo(mail, getSettings().report_action);
+  const successMove = await moveMessageTo(mail, settings.report_action);
   return successReport && successMove;
 }
 
 export async function reportSpam(mail: Office.MessageRead) {
-  const message = await parseMessage(mail);
-  await sendSMTPReport("cert@exchg.cert", "Spam Report", 2, message, null);
+  const message = await parseMessage(mail),
+    settings = getSettings();
+  await sendSMTPReport(settings.smtp_to, "Spam Report", 2, message, null);
   await moveMessageTo(mail, ReportAction.JUNK);
 }
