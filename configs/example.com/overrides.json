@@ -1,6 +1,6 @@
 {
     "defaults": {
-        "smtp_to": "cert@exchg.cert"
+        "smtp_to": "mailreport@example.com"
     },
     "locales": {
         "en-US": {

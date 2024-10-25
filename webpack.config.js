@@ -67,11 +67,22 @@ class ConfigGeneratorPlugin {
 module.exports = async (env, options) => {
   if (!("config" in env)) throw new Error("Error: No deployment config supplied, use --env config=<config_name>");
   const dev = options.mode === "development";
+
+  // Deployment config image overrides
+  const overrideImages = [];
+  const imagesOverridePath = path.join(__dirname, "configs", env.config, "images");
+  if (fs.existsSync(imagesOverridePath)) {
+    overrideImages.push({
+      from: `./configs/${env.config}/images/*`,
+      to: "assets/[name][ext][query]",
+    });
+  }
+
   const config = {
     devtool: "source-map",
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
-      report_fraud: ["./src/report_fraud/report_fraud.ts", "./src/report_fraud/report_fraud.html"],
+      report_fraud: "./src/report_fraud/report_fraud.ts",
       commands: "./src/commands/commands.ts",
       options: "./src/options/options.ts",
     },
@@ -98,25 +109,14 @@ module.exports = async (env, options) => {
           exclude: /node_modules/,
           use: "html-loader",
         },
-        {
-          test: /\.(png|jpg|jpeg|gif|ico)$/,
-          type: "asset/resource",
-          generator: {
-            filename: "assets/[name][ext][query]",
-          },
-        },
       ],
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        filename: "report_fraud.html",
-        template: "./src/report_fraud/report_fraud.html",
-        chunks: ["polyfill", "report_fraud"],
-      }),
       new CopyWebpackPlugin({
         patterns: [
+          ...overrideImages,
           {
-            from: "assets/*",
+            from: "./src/templates/images/*",
             to: "assets/[name][ext][query]",
           },
           {
@@ -131,6 +131,11 @@ module.exports = async (env, options) => {
             },
           },
         ],
+      }),
+      new HtmlWebpackPlugin({
+        filename: "report_fraud.html",
+        template: "./src/report_fraud/report_fraud.html",
+        chunks: ["polyfill", "report_fraud"],
       }),
       new HtmlWebpackPlugin({
         filename: "commands.html",
