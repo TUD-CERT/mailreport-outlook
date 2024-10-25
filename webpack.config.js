@@ -41,7 +41,7 @@ class ConfigGeneratorPlugin {
       // defaults.json
       const cfgOutputPath = path.join(__dirname, "src", "defaults.json");
       console.log(`Generating ${cfgOutputPath}`);
-      const templateConfig = JSON.parse(fs.readFileSync(path.join(__dirname, "src", "templates", "defaults.tpl")));
+      const templateConfig = JSON.parse(fs.readFileSync(path.join(__dirname, "templates", "defaults.tpl")));
       const resultConfig = updateTemplate(templateConfig, overrides.defaults);
       fs.writeFileSync(cfgOutputPath, JSON.stringify(resultConfig));
 
@@ -49,7 +49,7 @@ class ConfigGeneratorPlugin {
       const resultLocales = {};
       const localesOutputPath = path.join(__dirname, "src", "locales.json");
       console.log(`Generating ${localesOutputPath}`);
-      const templateLocales = path.join(__dirname, "src", "templates", "locales");
+      const templateLocales = path.join(__dirname, "templates", "locales");
       fs.readdirSync(templateLocales).forEach((locale) => {
         const localePath = path.join(templateLocales, locale);
         if (fs.statSync(localePath).isDirectory()) {
@@ -116,7 +116,7 @@ module.exports = async (env, options) => {
         patterns: [
           ...overrideImages,
           {
-            from: "./src/templates/images/*",
+            from: "./templates/images/*",
             to: "assets/[name][ext][query]",
           },
           {
