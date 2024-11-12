@@ -7,6 +7,7 @@ import { ReportAction } from "./models";
  */
 
 export class Settings {
+  permit_advanced_config: boolean;
   report_action: ReportAction;
   smtp_to: string;
 }
@@ -38,22 +39,8 @@ export function setSettings(settings: Settings): void {
  */
 export function getDefaults(): Settings {
   const settings = new Settings();
-  for (const key in settings) {
+  for (const key in defaultSettings) {
     settings[key] = defaultSettings[key];
   }
   return settings;
-}
-
-/**
- * Returns true if the given settings are equal to the ones set in Office.Roamingsettings.
- * Ignores keys that are only set in Office.RoamingSettings to support default values
- * that shouldn't be modified by users.
- */
-export function isEqualToSettings(settings: Settings): boolean {
-  const currentSettings = getSettings();
-  return Object.entries(settings)
-    .map(([k, v]) => {
-      return k in currentSettings && currentSettings[k] === v;
-    })
-    .every(Boolean);
 }

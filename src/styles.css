@@ -19,11 +19,11 @@
 
  button {
   width: 100%;
+  margin-top: 10px !important;
  }
  
 textarea {
   box-sizing: border-box;
-  margin-bottom: 10px;
   resize: none;
   width: 100%;
 }

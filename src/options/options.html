@@ -18,19 +18,37 @@
 
 <body class="ms-font-m ms-Fabric hide">
     <main id="mailreport-options">
-        <h1 class="ms-fontColor-themeDarker ms-font-xl">__MSG_optionsHeader__</div>
-        <div id="mailreport-report_action" class="ms-Dropdown">
-            <label for="mailreport-report_action_label" class="ms-Label">__MSG_optionsActionLabel__</label>
-            <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
-            <select id="mailreport-report_action_label" class="ms-Dropdown-select">
-                <option value="junk">__MSG_optionsActionJunk__</option>
-                <option value="trash">__MSG_optionsActionTrash__</option>
-                <option value="keep">__MSG_optionsActionKeep__</option>
-            </select>
-        </div>
-        <button type="button" class="ms-Button ms-Button--primary" id="mailreport-options-save">
-            <span class="ms-Button-label">__MSG_save__</span>
-        </button>
+        <form>
+            <h1 class="ms-fontColor-themeDarker ms-font-xl">__MSG_optionsHeader__</h1>
+            <div id="mailreport-report_action" class="ms-Dropdown">
+                <label for="mailreport-report_action_select" class="ms-Label">__MSG_optionsActionLabel__</label>
+                <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
+                <select id="mailreport-report_action_select" class="ms-Dropdown-select">
+                    <option value="junk">__MSG_optionsActionJunk__</option>
+                    <option value="trash">__MSG_optionsActionTrash__</option>
+                    <option value="keep">__MSG_optionsActionKeep__</option>
+                </select>
+            </div>
+            
+            <div id="mailreport-show_advanced" class="ms-CheckBox hide">
+                <input type="checkbox" class="ms-CheckBox-input" name="mailreport-advanced" />
+                <label role="checkbox" for="mailreport-advanced" class="ms-CheckBox-field" aria-checked="false">
+                    <span class="ms-Label">__MSG_optionsShowAdvanced__</span>
+                </label>
+            </div>
+
+            <div class="mailreport-advanced hide">
+                <label class="mailreport-smtp ms-Label" for="mailreport-smtp_to"><strong>SMTP:</strong> __MSG_optionsSMTPRecipientLabel__</label>
+                <input class="ms-TextField-field mailreport-smtp" type="email" id="mailreport-smtp_to" placeholder="reports@example.com" required />
+            </div>
+
+            <button type="button" class="ms-Button mailreport-advanced hide" id="mailreport-options-reset">
+                <span class="ms-Button-Label">__MSG_optionsReset__</span>
+            </button>
+            <button type="submit" class="ms-Button ms-Button--primary" id="mailreport-options-save">
+                <span class="ms-Button-label">__MSG_save__</span>
+            </button>
+        </form>
     </main>
 </body>
 

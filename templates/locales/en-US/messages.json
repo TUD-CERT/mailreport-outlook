@@ -1,10 +1,13 @@
 {
     "save": "Save",
+    "optionsShowAdvanced": "Show advanced settings",
     "optionsHeader": "Configuration",
+    "optionsReset": "Reset all settings",
     "optionsActionLabel": "After reporting an E-Mail,",
     "optionsActionJunk": "move it to the junk folder",
     "optionsActionTrash": "delete it (move to the trash folder)",
     "optionsActionKeep": "keep it",
+    "optionsSMTPRecipientLabel": "E-Mail address to send reports to",
     "reportCommentPrompt": "The E-Mail will be forwarded to your security team.",
     "reportCommentJunk": "It will then be moved to your junk folder.",
     "reportCommentTrash": "It will then be deleted.",
