@@ -8,6 +8,7 @@
     "optionsActionTrash": "verschiebe sie in den Papierkorb",
     "optionsActionKeep": "behalte sie",
     "optionsSMTPRecipientLabel": "E-Mail-Adresse, an die Meldungen gesendet werden",
+    "optionsSMTPExpressiveSubject": "Mit aussagekräftiger Betreffszeile melden",
     "reportCommentPrompt": "Die E-Mail wird an Ihr IT-Sicherheitsteam weitergeleitet.",
     "reportCommentJunk": "Sie wird anschließend in Ihr Junk-Verzeichnis verschoben.",
     "reportCommentTrash": "Sie wird anschließend gelöscht.",

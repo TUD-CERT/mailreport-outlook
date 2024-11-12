@@ -10,6 +10,7 @@ export class Settings {
   permit_advanced_config: boolean;
   report_action: ReportAction;
   smtp_to: string;
+  smtp_use_expressive_subject: boolean;
 }
 
 /**

@@ -1,6 +1,7 @@
 {
     "defaults": {
-        "smtp_to": "cert@exchg.cert"
+        "smtp_to": "cert@exchg.cert",
+        "smtp_use_expressive_subject": true
     },
     "locales": {
         "en-US": {

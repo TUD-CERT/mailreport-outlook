@@ -31,8 +31,8 @@
             </div>
             
             <div id="mailreport-show_advanced" class="ms-CheckBox hide">
-                <input type="checkbox" class="ms-CheckBox-input" name="mailreport-advanced" />
-                <label role="checkbox" for="mailreport-advanced" class="ms-CheckBox-field" aria-checked="false">
+                <input class="ms-CheckBox-input" type="checkbox" id="mailreport-advanced-toggle" />
+                <label role="checkbox" for="mailreport-advanced-toggle" class="ms-CheckBox-field" aria-checked="false">
                     <span class="ms-Label">__MSG_optionsShowAdvanced__</span>
                 </label>
             </div>
@@ -40,6 +40,12 @@
             <div class="mailreport-advanced hide">
                 <label class="mailreport-smtp ms-Label" for="mailreport-smtp_to"><strong>SMTP:</strong> __MSG_optionsSMTPRecipientLabel__</label>
                 <input class="ms-TextField-field mailreport-smtp" type="email" id="mailreport-smtp_to" placeholder="reports@example.com" required />
+                <div id="mailreport-toggle_expressive_subject" class="ms-CheckBox">
+                    <input class="ms-CheckBox-input mailreport-smtp" type="checkbox" id="mailreport-smtp_use_expressive_subject" />
+                    <label role="checkbox" for="mailreport-smtp_use_expressive_subject" class="ms-CheckBox-field" aria-checked="false">
+                        <span class="ms-Label">__MSG_optionsSMTPExpressiveSubject__</span>
+                    </label>
+                </div>
             </div>
 
             <button type="button" class="ms-Button mailreport-advanced hide" id="mailreport-options-reset">

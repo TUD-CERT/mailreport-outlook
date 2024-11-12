@@ -23,12 +23,13 @@ function updateSelect(selectElement: HTMLElement, newValue: string) {
  * Takes into account the current permission configuration: If advanced
  * configuration is disabled, only basic config keys/values are returned.
  */
-function getFormSettings(currentSettings: Settings): Settings {
+function getFormSettings(currentSettings: Settings, expressiveSubjectCheckbox: any): Settings {
   const settings = new Settings();
   settings.report_action = (<HTMLSelectElement>document.getElementById("mailreport-report_action_select"))
     .value as ReportAction;
   if (currentSettings.permit_advanced_config) {
     settings.smtp_to = (<HTMLInputElement>document.getElementById("mailreport-smtp_to")).value;
+    settings.smtp_use_expressive_subject = expressiveSubjectCheckbox.getValue();
   }
   return settings;
 }
@@ -36,9 +37,11 @@ function getFormSettings(currentSettings: Settings): Settings {
 /**
  * Restores all form fields from the given settings object.
  */
-function restoreFormSettings(settings: Settings) {
+function restoreFormSettings(settings: Settings, expressiveSubjectCheckbox: any) {
   updateSelect(document.getElementById("mailreport-report_action"), settings.report_action);
   (<HTMLInputElement>document.getElementById("mailreport-smtp_to")).value = settings.smtp_to;
+  if (settings.smtp_use_expressive_subject) expressiveSubjectCheckbox.check();
+  else expressiveSubjectCheckbox.unCheck();
   updateFormFields();
 }
 
@@ -48,7 +51,7 @@ function restoreFormSettings(settings: Settings) {
  */
 function updateFormFields() {
   // Advanced settings
-  let showAdvancedSettings = (<HTMLInputElement>document.querySelector('input[name="mailreport-advanced"]')).checked;
+  let showAdvancedSettings = (<HTMLInputElement>document.getElementById("mailreport-advanced-toggle")).checked;
   const advancedElements = document.querySelectorAll(".mailreport-advanced");
   for (let i = 0; i < advancedElements.length; i++) {
     const $element = advancedElements[i];
@@ -70,7 +73,8 @@ Office.onReady(() => {
   localizeDocument();
   fixOWAPadding();
   const dropdownHTMLElements = document.querySelectorAll(".ms-Dropdown"),
-    checkboxHTMLElements = document.querySelectorAll(".ms-CheckBox"),
+    $toggleAdvancedCheckbox = document.getElementById("mailreport-show_advanced"),
+    $toggleExpressiveSubjectCheckbox = document.getElementById("mailreport-toggle_expressive_subject"),
     $resetButton = document.getElementById("mailreport-options-reset"),
     $form = document.querySelector("#mailreport-options form"),
     visibilityChangingHTMLElements = document.querySelectorAll('input[type="checkbox"]');
@@ -78,17 +82,16 @@ Office.onReady(() => {
   for (var i = 0; i < dropdownHTMLElements.length; ++i) {
     new fabric["Dropdown"](dropdownHTMLElements[i]);
   }
-  for (i = 0; i < checkboxHTMLElements.length; ++i) {
-    new fabric["CheckBox"](checkboxHTMLElements[i]);
-  }
+  new fabric["CheckBox"]($toggleAdvancedCheckbox);
+  const expressiveSubjectCheckbox = new fabric["CheckBox"]($toggleExpressiveSubjectCheckbox);
   new fabric["Button"]($resetButton, () => {
     const defaultSettings = getDefaults();
-    restoreFormSettings(defaultSettings);
+    restoreFormSettings(defaultSettings, expressiveSubjectCheckbox);
     console.log("restored default settings", defaultSettings);
   });
   $form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const settings = getFormSettings(getSettings());
+    const settings = getFormSettings(getSettings(), expressiveSubjectCheckbox);
     setSettings(settings);
     console.log("saved settings", settings);
     Office.context.ui.closeContainer();
@@ -99,6 +102,6 @@ Office.onReady(() => {
 
   const settings = getSettings();
   console.log("loaded settings", settings);
-  restoreFormSettings(settings);
+  restoreFormSettings(settings, expressiveSubjectCheckbox);
   showPermittedElements(settings);
 });

@@ -44,9 +44,11 @@ async function parseMessage(email: Office.MessageRead): Promise<Message> {
 export async function reportFraud(mail: Office.MessageRead, comment: string) {
   const message = await parseMessage(mail),
     settings = getSettings();
+  let subject = "Phishing Report";
+  if (settings.smtp_use_expressive_subject) subject += `: ${message.subject}`;
   const successReport = await sendSMTPReport(
     settings.smtp_to,
-    "Phishing Report",
+    subject,
     2,
     message,
     comment.length > 0 ? comment : null
@@ -58,6 +60,8 @@ export async function reportFraud(mail: Office.MessageRead, comment: string) {
 export async function reportSpam(mail: Office.MessageRead) {
   const message = await parseMessage(mail),
     settings = getSettings();
-  await sendSMTPReport(settings.smtp_to, "Spam Report", 2, message, null);
+  let subject = "Spam Report";
+  if (settings.smtp_use_expressive_subject) subject += `: ${message.subject}`;
+  await sendSMTPReport(settings.smtp_to, subject, 2, message, null);
   await moveMessageTo(mail, ReportAction.JUNK);
 }
