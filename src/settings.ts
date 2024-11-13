@@ -1,17 +1,6 @@
 /* global console, Office */
 import defaultSettings from "./defaults.json";
-import { ReportAction } from "./models";
-
-/**
- * Provides shared access to the add-in's settings, persisted via Office.RoamingSettings.
- */
-
-export class Settings {
-  permit_advanced_config: boolean;
-  report_action: ReportAction;
-  smtp_to: string;
-  smtp_use_expressive_subject: boolean;
-}
+import { Settings } from "./models";
 
 /**
  * Attempts to retrieve settings from Office.RoamingSettings, otherwise returns static defaults.
