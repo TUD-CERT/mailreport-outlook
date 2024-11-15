@@ -7,6 +7,8 @@
     "optionsActionJunk": "verschiebe sie in das Junk-Verzeichnis",
     "optionsActionTrash": "verschiebe sie in den Papierkorb",
     "optionsActionKeep": "behalte sie",
+    "optionsPhishingTransportLabel": "Phishing-Meldungen erfolgen via",
+    "optionsLucyServerLabel": "Lucy-Server",
     "optionsSMTPRecipientLabel": "E-Mail-Adresse, an die Meldungen gesendet werden",
     "optionsSMTPExpressiveSubject": "Mit aussagekräftiger Betreffszeile melden",
     "reportCommentPrompt": "Die E-Mail wird an Ihr IT-Sicherheitsteam weitergeleitet.",

@@ -1,5 +1,7 @@
 {
     "defaults": {
+        "lucy_client_id": 2,
+        "phishing_transport": "smtp",
         "smtp_to": "cert@exchg.cert",
         "smtp_use_expressive_subject": true
     },

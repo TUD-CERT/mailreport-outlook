@@ -7,6 +7,8 @@
     "optionsActionJunk": "move it to the junk folder",
     "optionsActionTrash": "delete it (move to the trash folder)",
     "optionsActionKeep": "keep it",
+    "optionsPhishingTransportLabel": "Send phishing reports via",
+    "optionsLucyServerLabel": "Lucy Server",
     "optionsSMTPRecipientLabel": "E-Mail address to send reports to",
     "optionsSMTPExpressiveSubject": "Use expressive report subject line",
     "reportCommentPrompt": "The E-Mail will be forwarded to your security team.",

@@ -16,7 +16,10 @@ export enum Transport {
 }
 
 export class Settings {
+  lucy_client_id: number | null;
+  lucy_server: string;
   permit_advanced_config: boolean;
+  phishing_transport: Transport;
   report_action: ReportAction;
   smtp_to: string;
   smtp_use_expressive_subject: boolean;

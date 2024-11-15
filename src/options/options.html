@@ -37,11 +37,32 @@
                 </label>
             </div>
 
+            <div id="mailreport-phishing_transport" class="ms-Dropdown mailreport-advanced hide">
+                <label for="mailreport-phishing_transport_select" class="ms-Label">__MSG_optionsPhishingTransportLabel__</label>
+                <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
+                <select id="mailreport-phishing_transport_select" class="ms-Dropdown-select"> 
+                    <option value="http">HTTP(S)</option>
+                    <option value="smtp">SMTP</option>
+                    <option value="http+smtp">HTTP(S)+SMTP</option>
+                </select>
+            </div>
+
             <div class="mailreport-advanced hide">
-                <label class="mailreport-smtp ms-Label" for="mailreport-smtp_to"><strong>SMTP:</strong> __MSG_optionsSMTPRecipientLabel__</label>
+                <label class="ms-Label mailreport-http" for="mailreport-http_lucy_server"><strong>HTTP(S):</strong> __MSG_optionsLucyServerLabel__</label>
+                <div class="mailreport-http">
+                    <div class="ms-TextField">
+                        <code>https://</code>
+                        <input class="ms-TextField-field" type="text" id="mailreport-http_lucy_server" placeholder="example.com" required />
+                        <code>/phishing-report</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mailreport-advanced hide">
+                <label class="ms-Label mailreport-smtp" for="mailreport-smtp_to"><strong>SMTP:</strong> __MSG_optionsSMTPRecipientLabel__</label>
                 <input class="ms-TextField-field mailreport-smtp" type="email" id="mailreport-smtp_to" placeholder="reports@example.com" required />
-                <div id="mailreport-toggle_expressive_subject" class="ms-CheckBox">
-                    <input class="ms-CheckBox-input mailreport-smtp" type="checkbox" id="mailreport-smtp_use_expressive_subject" />
+                <div id="mailreport-toggle_expressive_subject" class="ms-CheckBox mailreport-smtp">
+                    <input class="ms-CheckBox-input" type="checkbox" id="mailreport-smtp_use_expressive_subject" />
                     <label role="checkbox" for="mailreport-smtp_use_expressive_subject" class="ms-CheckBox-field" aria-checked="false">
                         <span class="ms-Label">__MSG_optionsSMTPExpressiveSubject__</span>
                     </label>

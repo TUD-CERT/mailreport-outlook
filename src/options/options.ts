@@ -1,6 +1,6 @@
 /* global console, document, fabric, Element, HTMLButtonElement, HTMLElement, HTMLFormElement, HTMLInputElement, HTMLSelectElement, NodeListOf, Office */
 import { localizeDocument } from "../i18n";
-import { ReportAction, Settings } from "../models";
+import { ReportAction, Settings, Transport } from "../models";
 import { getDefaults, getSettings, setSettings } from "../settings";
 import { fixOWAPadding } from "../utils";
 
@@ -8,16 +8,24 @@ class OptionsForm {
   advancedElements: NodeListOf<Element>;
   expressiveSubjectCheckbox: any; // fabric CheckBox component
   form: HTMLFormElement;
+  httpElements: NodeListOf<Element>;
+  lucyServerInput: HTMLInputElement;
+  phishingTransportDropdown: HTMLElement;
   reportActionDropdown: HTMLElement;
   resetButton: HTMLButtonElement;
+  smtpElements: NodeListOf<Element>;
   smtpToInput: HTMLInputElement;
   toggleAdvancedCheckbox: any; // fabric CheckBox component
 
   constructor() {
     this.advancedElements = document.querySelectorAll(".mailreport-advanced");
     this.form = document.querySelector("#mailreport-options form");
+    this.httpElements = document.querySelectorAll(".mailreport-http");
+    this.lucyServerInput = <HTMLInputElement>document.getElementById("mailreport-http_lucy_server");
+    this.phishingTransportDropdown = <HTMLSelectElement>document.getElementById("mailreport-phishing_transport");
     this.reportActionDropdown = <HTMLSelectElement>document.getElementById("mailreport-report_action");
     this.resetButton = <HTMLButtonElement>document.getElementById("mailreport-options-reset");
+    this.smtpElements = document.querySelectorAll(".mailreport-smtp");
     this.smtpToInput = <HTMLInputElement>document.getElementById("mailreport-smtp_to");
   }
 
@@ -27,10 +35,16 @@ class OptionsForm {
       $toggleExpressiveSubjectCheckbox = document.getElementById("mailreport-toggle_expressive_subject");
     // Initialize fabric components
     this.expressiveSubjectCheckbox = new fabric["CheckBox"]($toggleExpressiveSubjectCheckbox);
-    dropdownElements.forEach((e) => new fabric["Dropdown"](e));
-    // Update form field visibility when toggling the advanced options checkbox
     this.toggleAdvancedCheckbox = new fabric["CheckBox"]($toggleAdvancedCheckbox);
-    this.toggleAdvancedCheckbox._choiceInput.addEventListener("change", () => updateFormFields(this));
+    dropdownElements.forEach((e) => new fabric["Dropdown"](e));
+    // Update form field visibility when toggling checkbox that show or hide elements
+    const visibilityChangingElements = [
+      this.phishingTransportDropdown.querySelector("select"),
+      this.toggleAdvancedCheckbox._choiceInput,
+    ];
+    visibilityChangingElements.forEach((e) => {
+      e.addEventListener("change", () => updateFormFields(this));
+    });
     // Set reset button handler
     new fabric["Button"](this.resetButton, () => {
       const defaultSettings = getDefaults();
@@ -79,6 +93,8 @@ function getFormSettings(form: OptionsForm, currentSettings: Settings): Settings
   const settings = new Settings();
   settings.report_action = getDropdownValue(form.reportActionDropdown) as ReportAction;
   if (currentSettings.permit_advanced_config) {
+    settings.lucy_server = form.lucyServerInput.value;
+    settings.phishing_transport = getDropdownValue(form.phishingTransportDropdown) as Transport;
     settings.smtp_to = form.smtpToInput.value;
     settings.smtp_use_expressive_subject = form.expressiveSubjectCheckbox.getValue();
   }
@@ -89,6 +105,8 @@ function getFormSettings(form: OptionsForm, currentSettings: Settings): Settings
  * Restores all form fields from the given settings object.
  */
 function restoreFormSettings(form: OptionsForm, settings: Settings) {
+  form.lucyServerInput.value = settings.lucy_server;
+  updateDropdown(form.phishingTransportDropdown, settings.phishing_transport);
   updateDropdown(form.reportActionDropdown, settings.report_action);
   form.smtpToInput.value = settings.smtp_to;
   if (settings.smtp_use_expressive_subject) form.expressiveSubjectCheckbox.check();
@@ -102,11 +120,35 @@ function restoreFormSettings(form: OptionsForm, settings: Settings) {
  */
 function updateFormFields(form: OptionsForm) {
   // Advanced settings
-  const advancedElements = form.advancedElements;
-  for (let i = 0; i < advancedElements.length; i++) {
-    const $element = advancedElements[i];
-    if (form.toggleAdvancedCheckbox.getValue()) $element.classList.remove("hide");
-    else $element.classList.add("hide");
+  form.advancedElements.forEach((e) => {
+    if (form.toggleAdvancedCheckbox.getValue()) e.classList.remove("hide");
+    else e.classList.add("hide");
+  });
+  // HTTP(S)+SMTP
+  const phishingTransportValue = getDropdownValue(form.phishingTransportDropdown),
+    smtpEnabled = phishingTransportValue === Transport.SMTP || phishingTransportValue === Transport.HTTPSMTP,
+    httpEnabled = phishingTransportValue === Transport.HTTP || phishingTransportValue === Transport.HTTPSMTP;
+  if (httpEnabled) {
+    form.httpElements.forEach((e) => {
+      e.classList.remove("hide");
+    });
+    form.lucyServerInput.required = true;
+  } else {
+    form.httpElements.forEach((e) => {
+      e.classList.add("hide");
+    });
+    form.lucyServerInput.required = false;
+  }
+  if (smtpEnabled) {
+    form.smtpElements.forEach((e) => {
+      e.classList.remove("hide");
+    });
+    form.smtpToInput.required = true;
+  } else {
+    form.smtpElements.forEach((e) => {
+      e.classList.add("hide");
+    });
+    form.smtpToInput.required = false;
   }
 }
 

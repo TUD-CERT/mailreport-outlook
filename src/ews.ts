@@ -39,9 +39,9 @@ export async function getRawEmail(ewsId: string) {
 export async function sendSMTPReport(
   destination: string,
   subject: string,
-  lucyClientID: number = null,
+  lucyClientID: number | null = null,
   message: Message,
-  comment: string = null
+  comment: string | null = null
 ) {
   let bodyXML = "",
     commentBody = "",
