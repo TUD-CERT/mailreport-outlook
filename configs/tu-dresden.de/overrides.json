@@ -1,7 +1,9 @@
 {
     "defaults": {
         "lucy_client_id": 2,
+        "lucy_server": "tu-dresdem.de",
         "phishing_transport": "smtp",
+        "simulation_transport": "http",
         "smtp_to": "cert@exchg.cert",
         "smtp_use_expressive_subject": true
     },

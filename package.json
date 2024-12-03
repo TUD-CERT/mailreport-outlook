@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "core-js": "^3.36.0",
-    "regenerator-runtime": "^0.14.1"
+    "regenerator-runtime": "^0.14.1",
+    "urijs": "^1.19.11"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

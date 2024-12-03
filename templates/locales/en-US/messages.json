@@ -1,4 +1,5 @@
 {
+    "close": "Close",
     "save": "Save",
     "optionsShowAdvanced": "Show advanced settings",
     "optionsHeader": "Configuration",
@@ -8,6 +9,7 @@
     "optionsActionTrash": "delete it (move to the trash folder)",
     "optionsActionKeep": "keep it",
     "optionsPhishingTransportLabel": "Send phishing reports via",
+    "optionsSimulationTransportLabel": "Send simulation reports via",
     "optionsLucyServerLabel": "Lucy Server",
     "optionsSMTPRecipientLabel": "E-Mail address to send reports to",
     "optionsSMTPExpressiveSubject": "Use expressive report subject line",
@@ -19,5 +21,7 @@
     "reportSubmit": "Send report",
     "reportWait": "Sending report",
     "reportSuccess": "Thanks for your report!",
-    "reportError": "Reporting failed, please try again later."
+    "reportError": "Reporting failed, please try again later.",
+    "simulationAckSuccessHeader": "Well done!",
+    "simulationAckSuccessBody": "You reported a suspicious E-Mail that is part of our phishing training campaign. Thank you!"
 }

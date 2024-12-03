@@ -85,6 +85,7 @@ module.exports = async (env, options) => {
       report_fraud: "./src/report_fraud/report_fraud.ts",
       commands: "./src/commands/commands.ts",
       options: "./src/options/options.ts",
+      simulation_ack: "./src/simulation/simulation_ack.ts",
     },
     output: {
       clean: true,
@@ -146,6 +147,11 @@ module.exports = async (env, options) => {
         filename: "options.html",
         template: "./src/options/options.html",
         chunks: ["polyfill", "options"],
+      }),
+      new HtmlWebpackPlugin({
+        filename: "simulation_ack.html",
+        template: "./src/simulation/simulation_ack.html",
+        chunks: ["polyfill", "simulation_ack"],
       }),
       new ConfigGeneratorPlugin(env.config),
     ],

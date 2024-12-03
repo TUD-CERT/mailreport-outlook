@@ -9,6 +9,12 @@ export enum ReportAction {
   KEEP = "keep",
 }
 
+export enum ReportResult {
+  SUCCESS,
+  SIMULATION,
+  ERROR,
+}
+
 export enum Transport {
   HTTP = "http",
   SMTP = "smtp",
@@ -20,6 +26,7 @@ export class Settings {
   lucy_server: string;
   permit_advanced_config: boolean;
   phishing_transport: Transport;
+  simulation_transport: Transport;
   report_action: ReportAction;
   smtp_to: string;
   smtp_use_expressive_subject: boolean;
@@ -30,6 +37,7 @@ export class Message {
   to: string;
   date: Date;
   subject: string;
+  headers: object; // {key: [val1, val2, ...]} with lowercase keys
   preview: string;
   previewType: BodyType;
   raw: string;

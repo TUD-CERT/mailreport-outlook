@@ -11,6 +11,7 @@ class OptionsForm {
   httpElements: NodeListOf<Element>;
   lucyServerInput: HTMLInputElement;
   phishingTransportDropdown: HTMLElement;
+  simulationTransportDropdown: HTMLElement;
   reportActionDropdown: HTMLElement;
   resetButton: HTMLButtonElement;
   smtpElements: NodeListOf<Element>;
@@ -23,6 +24,7 @@ class OptionsForm {
     this.httpElements = document.querySelectorAll(".mailreport-http");
     this.lucyServerInput = <HTMLInputElement>document.getElementById("mailreport-http_lucy_server");
     this.phishingTransportDropdown = <HTMLSelectElement>document.getElementById("mailreport-phishing_transport");
+    this.simulationTransportDropdown = <HTMLSelectElement>document.getElementById("mailreport-simulation_transport");
     this.reportActionDropdown = <HTMLSelectElement>document.getElementById("mailreport-report_action");
     this.resetButton = <HTMLButtonElement>document.getElementById("mailreport-options-reset");
     this.smtpElements = document.querySelectorAll(".mailreport-smtp");
@@ -40,6 +42,7 @@ class OptionsForm {
     // Update form field visibility when toggling checkbox that show or hide elements
     const visibilityChangingElements = [
       this.phishingTransportDropdown.querySelector("select"),
+      this.simulationTransportDropdown.querySelector("select"),
       this.toggleAdvancedCheckbox._choiceInput,
     ];
     visibilityChangingElements.forEach((e) => {
@@ -95,6 +98,7 @@ function getFormSettings(form: OptionsForm, currentSettings: Settings): Settings
   if (currentSettings.permit_advanced_config) {
     settings.lucy_server = form.lucyServerInput.value;
     settings.phishing_transport = getDropdownValue(form.phishingTransportDropdown) as Transport;
+    settings.simulation_transport = getDropdownValue(form.simulationTransportDropdown) as Transport;
     settings.smtp_to = form.smtpToInput.value;
     settings.smtp_use_expressive_subject = form.expressiveSubjectCheckbox.getValue();
   }
@@ -107,6 +111,7 @@ function getFormSettings(form: OptionsForm, currentSettings: Settings): Settings
 function restoreFormSettings(form: OptionsForm, settings: Settings) {
   form.lucyServerInput.value = settings.lucy_server;
   updateDropdown(form.phishingTransportDropdown, settings.phishing_transport);
+  updateDropdown(form.simulationTransportDropdown, settings.simulation_transport);
   updateDropdown(form.reportActionDropdown, settings.report_action);
   form.smtpToInput.value = settings.smtp_to;
   if (settings.smtp_use_expressive_subject) form.expressiveSubjectCheckbox.check();
@@ -125,9 +130,15 @@ function updateFormFields(form: OptionsForm) {
     else e.classList.add("hide");
   });
   // HTTP(S)+SMTP
-  const phishingTransportValue = getDropdownValue(form.phishingTransportDropdown),
-    smtpEnabled = phishingTransportValue === Transport.SMTP || phishingTransportValue === Transport.HTTPSMTP,
-    httpEnabled = phishingTransportValue === Transport.HTTP || phishingTransportValue === Transport.HTTPSMTP;
+  let httpEnabled = false,
+    smtpEnabled = false;
+  for (const t in [
+    getDropdownValue(form.phishingTransportDropdown),
+    getDropdownValue(form.simulationTransportDropdown),
+  ]) {
+    httpEnabled = httpEnabled || t === Transport.HTTP || t === Transport.HTTPSMTP;
+    smtpEnabled = smtpEnabled || t === Transport.SMTP || t === Transport.HTTPSMTP;
+  }
   if (httpEnabled) {
     form.httpElements.forEach((e) => {
       e.classList.remove("hide");

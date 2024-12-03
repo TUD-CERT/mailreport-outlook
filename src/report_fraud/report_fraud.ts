@@ -1,8 +1,9 @@
 /* global document, HTMLTextAreaElement, Office */
 import { localizeToken, localizeDocument } from "../i18n";
-import { ReportAction } from "../models";
+import { ReportAction, ReportResult } from "../models";
 import { reportFraud } from "../reporting";
 import { getSettings } from "../settings";
+import { showSimulationAcknowledgement } from "../simulation";
 import { fixOWAPadding, sleep } from "../utils";
 
 function showView(selector: string) {
@@ -14,9 +15,20 @@ function showView(selector: string) {
 async function handleFraudReport() {
   showView("#mailreport-fraud-pending");
   const comment = (<HTMLTextAreaElement>document.getElementById("reportComment")).value;
-  const success = await reportFraud(Office.context.mailbox.item, comment);
-  showView(success ? "#mailreport-fraud-success" : "#mailreport-fraud-error");
-  await sleep(success ? 2000 : 5000);
+  const reportResult = await reportFraud(Office.context.mailbox.item, comment);
+  switch (reportResult) {
+    case ReportResult.SUCCESS:
+      showView("#mailreport-fraud-success");
+      await sleep(2000);
+      break;
+    case ReportResult.SIMULATION:
+      await showSimulationAcknowledgement();
+      break;
+    case ReportResult.ERROR:
+      showView("#mailreport-fraud-error");
+      await sleep(5000);
+      break;
+  }
   Office.context.ui.closeContainer();
 }
 

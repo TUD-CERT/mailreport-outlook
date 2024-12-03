@@ -1,7 +1,7 @@
 /* global console, fetch, Office */
 import { BodyType, Message, Transport } from "./models";
-import { getRawEmail, moveMessageTo, sendSMTPReport } from "./ews";
-import { ReportAction } from "./models";
+import { fetchMessage, moveMessageTo, sendSMTPReport } from "./ews";
+import { ReportAction, ReportResult } from "./models";
 import { getSettings } from "./settings";
 
 async function parseMessage(email: Office.MessageRead): Promise<Message> {
@@ -37,8 +37,38 @@ async function parseMessage(email: Office.MessageRead): Promise<Message> {
   result.subject = email.subject;
   result.preview = htmlContent;
   result.previewType = BodyType.HTML;
-  result.raw = await getRawEmail(email.itemId);
+  const message = await fetchMessage(email.itemId);
+  result.raw = message.raw;
+  result.headers = message.headers;
   return result;
+}
+
+/**
+ * Checks a message for Lucy headers that indicate the e-mail is part of a phishing simulation.
+ */
+function belongsToSimulation(message: Message) {
+  for (let key in message.headers) {
+    if (key.startsWith("x-lucy")) return true;
+  }
+  return false;
+}
+
+/**
+ * Parses Lucy mail headers and returns an array of reporting URLs.
+ */
+function getReportingURLs(message: Message) {
+  let urls = [];
+  for (let key in message.headers) {
+    if (key.includes("x-lucy") && key.includes("victimurl")) urls.push(message.headers[key][0]);
+  }
+  return urls;
+}
+
+/**
+ * Parses Lucy mail headers and returns the scenario ID or null, if none was found.
+ */
+function getScenarioID(message: Message): string | null {
+  return message.headers["x-lucy-scenario"][0] ?? null;
 }
 
 /**
@@ -49,18 +79,29 @@ async function sendHTTPReport(
   urls: string[],
   reporterAddress: string,
   message: Message,
+  lucyScenarioID: string | null = null,
   comment: string | null = null
 ) {
-  const lucyReport = {
+  const lucyReport: { [key: string]: any } = {
     email: reporterAddress,
     mail_content: message.raw,
     more_analysis: comment !== null,
     disable_incident_autoresponder: false,
     enable_comment_to_deeper_analysis_request: comment === null ? "" : comment,
   };
+  if (lucyScenarioID !== null) lucyReport.scenario_id = lucyScenarioID;
   let success = false;
   for (let url of urls) {
-    console.log("Sending report as ", reporterAddress, " via HTTP(S) to ", url);
+    if ("scenario_id" in lucyReport)
+      console.log(
+        "Reporting simulation for scenario ",
+        lucyScenarioID,
+        " as ",
+        reporterAddress,
+        " via HTTP(S) to ",
+        url
+      );
+    else console.log("Sending report as ", reporterAddress, " via HTTP(S) to ", url);
     // Send report
     try {
       await fetch(url, {
@@ -78,19 +119,30 @@ async function sendHTTPReport(
   return success;
 }
 
-export async function reportFraud(mail: Office.MessageRead, comment: string) {
+export async function reportFraud(mail: Office.MessageRead, comment: string): Promise<ReportResult> {
   const message = await parseMessage(mail),
+    isSimulation = belongsToSimulation(message),
     settings = getSettings(),
-    transport = settings.phishing_transport,
+    transport = isSimulation ? settings.simulation_transport : settings.phishing_transport,
     parsedComment = comment.length > 0 ? comment : null;
   let success = true;
 
   if (transport === Transport.HTTP || transport === Transport.HTTPSMTP) {
     let lucyReportURL = `https://${settings.lucy_server}/phishing-report`;
     if (settings.lucy_client_id !== null) lucyReportURL += `/${settings.lucy_client_id}`;
+    const lucyScenarioID = isSimulation ? getScenarioID(message) : null;
+    let urls = isSimulation ? getReportingURLs(message) : [lucyReportURL];
+    // If invalid Lucy headers are set, fall back to the configured Lucy instance
+    if (urls.length === 0) urls = [lucyReportURL];
     success =
       success &&
-      (await sendHTTPReport([lucyReportURL], Office.context.mailbox.userProfile.emailAddress, message, parsedComment));
+      (await sendHTTPReport(
+        urls,
+        Office.context.mailbox.userProfile.emailAddress,
+        message,
+        lucyScenarioID,
+        parsedComment
+      ));
   }
   if (transport === Transport.SMTP || transport === Transport.HTTPSMTP) {
     let subject = "Phishing Report";
@@ -98,18 +150,28 @@ export async function reportFraud(mail: Office.MessageRead, comment: string) {
     success =
       success && (await sendSMTPReport(settings.smtp_to, subject, settings.lucy_client_id, message, parsedComment));
   }
-
   if (success) await moveMessageTo(mail, settings.report_action);
-  return success;
+  if (success) {
+    if (isSimulation) return ReportResult.SIMULATION;
+    return ReportResult.SUCCESS;
+  }
+  return ReportResult.ERROR;
 }
 
-export async function reportSpam(mail: Office.MessageRead) {
+export async function reportSpam(mail: Office.MessageRead): Promise<ReportResult> {
   const message = await parseMessage(mail),
     settings = getSettings(),
     transport = settings.phishing_transport;
+  if (belongsToSimulation(message)) {
+    const result = await reportFraud(mail, "");
+    // Users expect reported spam mails to be moved away even if ReportAction is KEEP
+    if (settings.report_action === ReportAction.KEEP) await moveMessageTo(mail, ReportAction.JUNK);
+    return result;
+  }
   if (transport === Transport.HTTP) return; // HTTP endpoint does not support spam reports
   let subject = "Spam Report";
   if (settings.smtp_use_expressive_subject) subject += `: ${message.subject}`;
-  await sendSMTPReport(settings.smtp_to, subject, settings.lucy_client_id, message, null);
+  let success = await sendSMTPReport(settings.smtp_to, subject, settings.lucy_client_id, message, null);
   await moveMessageTo(mail, ReportAction.JUNK);
+  return success ? ReportResult.SUCCESS : ReportResult.ERROR;
 }

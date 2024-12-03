@@ -10,7 +10,7 @@ import { encodeHTML } from "./utils";
  * The Microsoft Graph API is not available in on-premises Exchange, either.
  */
 
-export async function getRawEmail(ewsId: string) {
+export async function fetchMessage(ewsId: string) {
   const request =
     '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages" xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">' +
     '  <soap:Header><t:RequestServerVersion Version="Exchange2013" /></soap:Header>' +
@@ -19,6 +19,9 @@ export async function getRawEmail(ewsId: string) {
     "      <m:ItemShape>" +
     "        <t:BaseShape>IdOnly</t:BaseShape>' +" +
     "        <t:IncludeMimeContent>true</t:IncludeMimeContent>" +
+    "        <t:AdditionalProperties>" +
+    '          <t:FieldURI FieldURI="item:InternetMessageHeaders" />' +
+    "        </t:AdditionalProperties>" +
     "      </m:ItemShape >" +
     "      <m:ItemIds>" +
     `        <t:ItemId Id="${ewsId}" />` +
@@ -26,12 +29,20 @@ export async function getRawEmail(ewsId: string) {
     "    </m:GetItem>" +
     "  </soap:Body>" +
     "</soap:Envelope>";
-  return await new Promise<string>((resolve) => {
+  return await new Promise<{ raw: string; headers: object }>((resolve) => {
     Office.context.mailbox.makeEwsRequestAsync(request, function (result) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(result.value, "text/xml");
-      const values = doc.getElementsByTagName("t:MimeContent");
-      resolve(values[0].textContent);
+      const parser = new DOMParser(),
+        doc = parser.parseFromString(result.value, "text/xml"),
+        base64Raw = doc.getElementsByTagName("t:MimeContent")[0].textContent,
+        headerElements = doc.getElementsByTagName("t:InternetMessageHeader"),
+        headers = {};
+      for (let i = 0; i < headerElements.length; i++) {
+        const headerKey = headerElements[i].getAttribute("HeaderName").toLocaleLowerCase(),
+          headerValue = headerElements[i].textContent;
+        if (!(headerKey in headers)) headers[headerKey] = [];
+        headers[headerKey].push(headerValue);
+      }
+      resolve({ raw: base64Raw, headers: headers });
     });
   });
 }
