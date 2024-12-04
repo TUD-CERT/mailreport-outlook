@@ -5,8 +5,7 @@ const fs = require("fs");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
-const urlDev = "https://localhost:3000/";
-const urlProd = "https://mailsecurity.cert.tu-dresden.de/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
+const LOCAL_DEV_URL = "https://localhost:3000";
 
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
@@ -27,8 +26,9 @@ function updateTemplate(template, overrides) {
 }
 
 class ConfigGeneratorPlugin {
-  constructor(deployment) {
+  constructor(deployment, isDev) {
     this.deployment = deployment;
+    this.isDev = isDev;
   }
 
   apply(compiler) {
@@ -37,15 +37,18 @@ class ConfigGeneratorPlugin {
       if (!fs.existsSync(deploymentPath)) throw new Error(`Error: Deployment ${this.deployment} not found`);
       console.log(`Deployment: ${this.deployment}`);
       const overrides = JSON.parse(fs.readFileSync(path.join(deploymentPath, "overrides.json")));
+      const pluginID = `${overrides.manifest.id}@${overrides.manifest.provider_name}/${overrides.manifest.version}`;
+      console.log(`Plugin ID: ${pluginID}`);
 
-      // defaults.json
+      // Generate defaults.json
       const cfgOutputPath = path.join(__dirname, "src", "defaults.json");
       console.log(`Generating ${cfgOutputPath}`);
       const templateConfig = JSON.parse(fs.readFileSync(path.join(__dirname, "templates", "defaults.tpl")));
       const resultConfig = updateTemplate(templateConfig, overrides.defaults);
+      resultConfig["plugin_id"] = pluginID;
       fs.writeFileSync(cfgOutputPath, JSON.stringify(resultConfig));
 
-      // locales.json
+      // Generate locales.json
       const resultLocales = {};
       const localesOutputPath = path.join(__dirname, "src", "locales.json");
       console.log(`Generating ${localesOutputPath}`);
@@ -60,13 +63,29 @@ class ConfigGeneratorPlugin {
         }
       });
       fs.writeFileSync(localesOutputPath, JSON.stringify(resultLocales));
+
+      // Generate manifest.xml
+      const manifestOutputPath = path.join(__dirname, "manifest.xml");
+      console.log(`Generating ${manifestOutputPath}`);
+      let manifest = fs.readFileSync(path.join(__dirname, "templates", "manifest.tpl"), { encoding: "utf8" });
+      manifest = manifest
+        .replaceAll("__ID__", overrides.manifest.id)
+        .replaceAll("__VERSION__", overrides.manifest.version)
+        .replaceAll("__PROVIDER_NAME__", overrides.manifest.provider_name)
+        .replaceAll("__HOSTED_AT__", this.isDev ? LOCAL_DEV_URL : overrides.manifest.hosted_at);
+      for (const locale in resultLocales) {
+        for (const tag in resultLocales[locale]) {
+          manifest = manifest.replaceAll(`__MSG_${tag}_${locale}__`, resultLocales[locale][tag]);
+        }
+      }
+      fs.writeFileSync(manifestOutputPath, manifest);
     });
   }
 }
 
 module.exports = async (env, options) => {
   if (!("config" in env)) throw new Error("Error: No deployment config supplied, use --env config=<config_name>");
-  const dev = options.mode === "development";
+  const isDev = options.mode === "development";
 
   // Deployment config image overrides
   const overrideImages = [];
@@ -120,17 +139,6 @@ module.exports = async (env, options) => {
             from: "./templates/images/*",
             to: "assets/[name][ext][query]",
           },
-          {
-            from: "manifest*.xml",
-            to: "[name]" + "[ext]",
-            transform(content) {
-              if (dev) {
-                return content;
-              } else {
-                return content.toString().replace(new RegExp(urlDev, "g"), urlProd);
-              }
-            },
-          },
         ],
       }),
       new HtmlWebpackPlugin({
@@ -153,7 +161,7 @@ module.exports = async (env, options) => {
         template: "./src/simulation/simulation_ack.html",
         chunks: ["polyfill", "simulation_ack"],
       }),
-      new ConfigGeneratorPlugin(env.config),
+      new ConfigGeneratorPlugin(env.config, isDev),
     ],
     devServer: {
       headers: {

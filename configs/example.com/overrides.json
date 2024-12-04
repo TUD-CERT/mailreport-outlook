@@ -1,4 +1,10 @@
 {
+    "manifest": {
+        "id": "93011bd0-5c6b-4af4-ba4a-87fc5bfee58b",
+        "provider_name": "Example Corp",
+        "version": "1.0",
+        "hosted_at": "https://example.com"
+    },
     "defaults": {
         "smtp_to": "mailreport@example.com"
     },

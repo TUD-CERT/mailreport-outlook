@@ -5,3 +5,4 @@ node_modules
 # Dynamic fragments generated during build process
 src/defaults.json
 src/locales.json
+manifest.xml

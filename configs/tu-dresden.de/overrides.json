@@ -1,4 +1,10 @@
 {
+    "manifest": {
+        "id": "a18ace8e-5e8e-4184-9a74-164203af8c77",
+        "provider_name": "TUD-CERT",
+        "version": "24.12.1.1",
+        "hosted_at": "https://mailsecurity.cert.tu-dresden.de"
+    },
     "defaults": {
         "lucy_client_id": 2,
         "lucy_server": "tu-dresdem.de",

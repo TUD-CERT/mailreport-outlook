@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0" xsi:type="MailApp">
-  <Id>a18ace8e-5e8e-4184-9a74-164203af8c77</Id>
-  <Version>1.0.0.0</Version>
-  <ProviderName>TUD-CERT</ProviderName>
+  <Id>__ID__</Id>
+  <Version>__VERSION__</Version>
+  <ProviderName>__PROVIDER_NAME__</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="E-Mail Report Button">
-    <Override Locale="de-DE" Value="E-Mail-Melde-Button"/>
+  <DisplayName DefaultValue="__MSG_extensionName_en-US__">
+    <Override Locale="de-DE" Value="__MSG_extensionName_de-DE__"/>
   </DisplayName>
-  <Description DefaultValue="Adds a phishing report button to the toolbar.">
-    <Override Locale="de-DE" Value="Fügt einen Phishing-Meldebutton zur Toolbar hinzu."/>
+  <Description DefaultValue="__MSG_extensionDescription_en-US__">
+    <Override Locale="de-DE" Value="__MSG_extensionDescription_de-DE__"/>
   </Description>
-  <IconUrl DefaultValue="https://localhost:3000/assets/app_64.png"/>
-  <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/app_128.png"/>
-  <SupportUrl DefaultValue="https://mailsecurity.cert.tu-dresden.de"/>
+  <IconUrl DefaultValue="__HOSTED_AT__/assets/app_64.png"/>
+  <HighResolutionIconUrl DefaultValue="__HOSTED_AT__/assets/app_128.png"/>
   <AppDomains>
-    <AppDomain>https://mailsecurity.cert.tu-dresden.de</AppDomain>
+    <AppDomain>__HOSTED_AT__</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Mailbox"/>
@@ -27,7 +26,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://localhost:3000/report_fraud.html"/>
+        <SourceLocation DefaultValue="__HOSTED_AT__/report_fraud.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -118,53 +117,53 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/assets/app_16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/assets/app_32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/assets/app_80.png"/>
-        <bt:Image id="Fraud.16x16" DefaultValue="https://localhost:3000/assets/fraud_16.png"/>
-        <bt:Image id="Fraud.32x32" DefaultValue="https://localhost:3000/assets/fraud_32.png"/>
-        <bt:Image id="Fraud.80x80" DefaultValue="https://localhost:3000/assets/fraud_80.png"/>
-        <bt:Image id="Spam.16x16" DefaultValue="https://localhost:3000/assets/spam_16.png"/>
-        <bt:Image id="Spam.32x32" DefaultValue="https://localhost:3000/assets/spam_32.png"/>
-        <bt:Image id="Spam.80x80" DefaultValue="https://localhost:3000/assets/spam_80.png"/>
-        <bt:Image id="Options.16x16" DefaultValue="https://localhost:3000/assets/options_16.png"/>
-        <bt:Image id="Options.32x32" DefaultValue="https://localhost:3000/assets/options_32.png"/>
-        <bt:Image id="Options.80x80" DefaultValue="https://localhost:3000/assets/options_80.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="__HOSTED_AT__/assets/app_16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="__HOSTED_AT__/assets/app_32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="__HOSTED_AT__/assets/app_80.png"/>
+        <bt:Image id="Fraud.16x16" DefaultValue="__HOSTED_AT__/assets/fraud_16.png"/>
+        <bt:Image id="Fraud.32x32" DefaultValue="__HOSTED_AT__/assets/fraud_32.png"/>
+        <bt:Image id="Fraud.80x80" DefaultValue="__HOSTED_AT__/assets/fraud_80.png"/>
+        <bt:Image id="Spam.16x16" DefaultValue="__HOSTED_AT__/assets/spam_16.png"/>
+        <bt:Image id="Spam.32x32" DefaultValue="__HOSTED_AT__/assets/spam_32.png"/>
+        <bt:Image id="Spam.80x80" DefaultValue="__HOSTED_AT__/assets/spam_80.png"/>
+        <bt:Image id="Options.16x16" DefaultValue="__HOSTED_AT__/assets/options_16.png"/>
+        <bt:Image id="Options.32x32" DefaultValue="__HOSTED_AT__/assets/options_32.png"/>
+        <bt:Image id="Options.80x80" DefaultValue="__HOSTED_AT__/assets/options_80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Commands.Url" DefaultValue="https://localhost:3000/commands.html"/>
-        <bt:Url id="ReportFraud.Url" DefaultValue="https://localhost:3000/report_fraud.html"/>
-        <bt:Url id="Options.Url" DefaultValue="https://localhost:3000/options.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="__HOSTED_AT__/commands.html"/>
+        <bt:Url id="ReportFraud.Url" DefaultValue="__HOSTED_AT__/report_fraud.html"/>
+        <bt:Url id="Options.Url" DefaultValue="__HOSTED_AT__/options.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GroupLabel" DefaultValue="Security">
-          <bt:Override Locale="de-DE" Value="Sicherheit"/>
+        <bt:String id="GroupLabel" DefaultValue="__MSG_extensionGroup_en-US__">
+          <bt:Override Locale="de-DE" Value="__MSG_extensionGroup_de-DE__"/>
         </bt:String>
-        <bt:String id="MenuButton.Label" DefaultValue="Report E-Mail">
-          <bt:Override Locale="de-DE" Value="E-Mail melden"/>
+        <bt:String id="MenuButton.Label" DefaultValue="__MSG_extensionButtonLabel_en-US__">
+          <bt:Override Locale="de-DE" Value="__MSG_extensionButtonLabel_de-DE__"/>
         </bt:String>
-        <bt:String id="FraudReport.Label" DefaultValue="Report as phishing/fraud...">
-          <bt:Override Locale="de-DE" Value="Als Phishing/Betrug melden..."/>
+        <bt:String id="FraudReport.Label" DefaultValue="__MSG_extensionFraudReportLabel_en-US__">
+          <bt:Override Locale="de-DE" Value="__MSG_extensionFraudReportLabel_de-DE__"/>
         </bt:String>
-        <bt:String id="SpamReport.Label" DefaultValue="Report as spam">
-          <bt:Override Locale="de-DE" Value="Als Spam melden"/>
+        <bt:String id="SpamReport.Label" DefaultValue="__MSG_extensionSpamReportLabel_en-US__">
+          <bt:Override Locale="de-DE" Value="__MSG_extensionSpamReportLabel_de-DE__"/>
         </bt:String>
-        <bt:String id="Options.Label" DefaultValue="Configure...">
-          <bt:Override Locale="de-DE" Value="Konfigurieren..."/>
+        <bt:String id="Options.Label" DefaultValue="__MSG_extensionOptionsLabel_en-US__">
+          <bt:Override Locale="de-DE" Value="__MSG_extensionOptionsLabel_de-DE__"/>
         </bt:String>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="MenuButton.Tooltip" DefaultValue="Initiates the reporting process for unwanted e-mails.">
-          <bt:Override Locale="de-DE" Value="Iniitiert den Meldeprozess für unerwünschte E-Mails."/>
+        <bt:String id="MenuButton.Tooltip" DefaultValue="__MSG_extensionButtonTooltip_en-US__">
+          <bt:Override Locale="de-DE" Value="__MSG_extensionButtonTooltip_de-DE__"/>
         </bt:String>
-        <bt:String id="FraudReport.Tooltip" DefaultValue="Report this e-mail as potentially malicious.">
-          <bt:Override Locale="de-DE" Value="Meldet die ausgewählte E-Mail als potentiell bösartig."/>
+        <bt:String id="FraudReport.Tooltip" DefaultValue="__MSG_extensionFraudReportTooltip_en-US__">
+          <bt:Override Locale="de-DE" Value="__MSG_extensionFraudReportTooltip_de-DE__"/>
         </bt:String>
-        <bt:String id="SpamReport.Tooltip" DefaultValue="Report this e-mail as spam.">
-          <bt:Override Locale="de-DE" Value="Meldet die ausgewählte E-Mail als Spam."/>
+        <bt:String id="SpamReport.Tooltip" DefaultValue="__MSG_extensionSpamReportTooltip_en-US__">
+          <bt:Override Locale="de-DE" Value="__MSG_extensionSpamReportTooltip_de-DE__"/>
         </bt:String>
-        <bt:String id="Options.Tooltip" DefaultValue="View and change reporting plugin configuration.">
-          <bt:Override Locale="de-DE" Value="Anzeigen und Ändern der Konfiguration des Melde-Plugins."/>
+        <bt:String id="Options.Tooltip" DefaultValue="__MSG_extensionOptionsTooltip_en-US__">
+          <bt:Override Locale="de-DE" Value="__MSG_extensionOptionsTooltip_de-DE__"/>
         </bt:String>
       </bt:LongStrings>
     </Resources>
