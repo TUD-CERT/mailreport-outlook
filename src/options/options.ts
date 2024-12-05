@@ -9,6 +9,7 @@ class OptionsForm {
   expressiveSubjectCheckbox: any; // fabric CheckBox component
   form: HTMLFormElement;
   httpElements: NodeListOf<Element>;
+  lucyClientIDInput: HTMLInputElement;
   lucyServerInput: HTMLInputElement;
   phishingTransportDropdown: HTMLElement;
   simulationTransportDropdown: HTMLElement;
@@ -22,6 +23,7 @@ class OptionsForm {
     this.advancedElements = document.querySelectorAll(".mailreport-advanced");
     this.form = document.querySelector("#mailreport-options form");
     this.httpElements = document.querySelectorAll(".mailreport-http");
+    this.lucyClientIDInput = <HTMLInputElement>document.getElementById("mailreport-lucy_client_id");
     this.lucyServerInput = <HTMLInputElement>document.getElementById("mailreport-http_lucy_server");
     this.phishingTransportDropdown = <HTMLSelectElement>document.getElementById("mailreport-phishing_transport");
     this.simulationTransportDropdown = <HTMLSelectElement>document.getElementById("mailreport-simulation_transport");
@@ -96,6 +98,7 @@ function getFormSettings(form: OptionsForm, currentSettings: Settings): Settings
   const settings = new Settings();
   settings.report_action = getDropdownValue(form.reportActionDropdown) as ReportAction;
   if (currentSettings.permit_advanced_config) {
+    settings.lucy_client_id = form.lucyClientIDInput.value !== "" ? parseInt(form.lucyClientIDInput.value) : null;
     settings.lucy_server = form.lucyServerInput.value;
     settings.phishing_transport = getDropdownValue(form.phishingTransportDropdown) as Transport;
     settings.simulation_transport = getDropdownValue(form.simulationTransportDropdown) as Transport;
@@ -109,6 +112,7 @@ function getFormSettings(form: OptionsForm, currentSettings: Settings): Settings
  * Restores all form fields from the given settings object.
  */
 function restoreFormSettings(form: OptionsForm, settings: Settings) {
+  form.lucyClientIDInput.value = settings.lucy_client_id !== null ? settings.lucy_client_id.toString() : "";
   form.lucyServerInput.value = settings.lucy_server;
   updateDropdown(form.phishingTransportDropdown, settings.phishing_transport);
   updateDropdown(form.simulationTransportDropdown, settings.simulation_transport);
@@ -176,7 +180,6 @@ Office.onReady(() => {
   fixOWAPadding();
   const form = new OptionsForm();
   form.initialize();
-  console.log(form);
   const settings = getSettings();
   console.log("loaded settings", settings);
   restoreFormSettings(form, settings);

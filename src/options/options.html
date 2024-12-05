@@ -58,7 +58,14 @@
             </div>
 
             <div class="mailreport-advanced hide">
-                <label class="ms-Label mailreport-http" for="mailreport-http_lucy_server"><strong>HTTP(S):</strong> __MSG_optionsLucyServerLabel__</label>
+                <label for="mailreport-lucy_client_id" class="ms-Label">Lucy Client-ID</label>
+                <div class="ms-TextField">
+                    <input class="ms-TextField-field" type="number" id="mailreport-lucy_client_id" min="1" max="99" step="1" placeholder="optional" />
+                </div>
+            </div>
+
+            <div class="mailreport-advanced hide">
+                <label for="mailreport-http_lucy_server" class="ms-Label mailreport-http"><strong>HTTP(S):</strong> __MSG_optionsLucyServerLabel__</label>
                 <div class="mailreport-http">
                     <div class="ms-TextField">
                         <code>https://</code>
