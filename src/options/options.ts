@@ -132,13 +132,12 @@ function updateFormFields(form: OptionsForm) {
   // HTTP(S)+SMTP
   let httpEnabled = false,
     smtpEnabled = false;
-  for (const t in [
-    getDropdownValue(form.phishingTransportDropdown),
-    getDropdownValue(form.simulationTransportDropdown),
-  ]) {
-    httpEnabled = httpEnabled || t === Transport.HTTP || t === Transport.HTTPSMTP;
-    smtpEnabled = smtpEnabled || t === Transport.SMTP || t === Transport.HTTPSMTP;
-  }
+  [getDropdownValue(form.phishingTransportDropdown), getDropdownValue(form.simulationTransportDropdown)].forEach(
+    (t) => {
+      httpEnabled = httpEnabled || t === Transport.HTTP || t === Transport.HTTPSMTP;
+      smtpEnabled = smtpEnabled || t === Transport.SMTP || t === Transport.HTTPSMTP;
+    }
+  );
   if (httpEnabled) {
     form.httpElements.forEach((e) => {
       e.classList.remove("hide");
