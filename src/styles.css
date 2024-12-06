@@ -38,6 +38,12 @@ textarea {
   margin-bottom: .3rem;
 }
 
+/* Fix dialog formatting in Outlook Desktop */
+#mailreport-simulation-ack {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
