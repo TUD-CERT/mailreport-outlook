@@ -25,9 +25,11 @@ export class Settings {
   lucy_client_id: number | null;
   lucy_server: string;
   permit_advanced_config: boolean;
-  phishing_transport: Transport;
-  simulation_transport: Transport;
   report_action: ReportAction;
+  phishing_transport: Transport;
+  plugin_id: string;
+  send_telemetry: boolean;
+  simulation_transport: Transport;
   smtp_to: string;
   smtp_use_expressive_subject: boolean;
 }

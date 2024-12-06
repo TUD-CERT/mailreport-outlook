@@ -1,6 +1,6 @@
 /* global console, DOMParser, Office */
 import { BodyType, Message, ReportAction } from "./models";
-import { encodeHTML } from "./utils";
+import { encodeHTML, objToStr } from "./utils";
 
 /**
  * Functionality implemented via legacy EWS due to missing equivalent methods
@@ -52,6 +52,7 @@ export async function sendSMTPReport(
   subject: string,
   lucyClientID: number | null = null,
   message: Message,
+  additionalHeaders: { [key: string]: string },
   comment: string | null = null
 ) {
   let bodyXML = "",
@@ -63,13 +64,13 @@ export async function sendSMTPReport(
       commentBody = comment !== null ? `X-More-Analysis: True\n${comment}\n` : "";
       lucyClientBody = lucyClientID !== null ? `X-Lucy-Client: ${lucyClientID}\n` : "";
       lucyCIBody = lucyClientID !== null ? `X-CI-Report: True\n` : "";
-      bodyXML = `<t:Body BodyType="Text">${lucyClientBody}${commentBody}${lucyCIBody}\n\n-----Original Message-----\nFrom: ${message.from}\nSent: ${message.date.toString()}\nTo: ${message.to}\nSubject: ${message.subject}\n\n${message.preview}\r\n</t:Body>`;
+      bodyXML = `<t:Body BodyType="Text">${lucyClientBody}${commentBody}${lucyCIBody}${objToStr(additionalHeaders, "\n")}\n\n-----Original Message-----\nFrom: ${message.from}\nSent: ${message.date.toString()}\nTo: ${message.to}\nSubject: ${message.subject}\n\n${message.preview}\r\n</t:Body>`;
       break;
     case BodyType.HTML:
       commentBody = comment !== null ? `X-More-Analysis: True<br />${comment}<br />` : "";
       lucyClientBody = lucyClientID !== null ? `X-Lucy-Client: ${lucyClientID}<br />` : "";
       lucyCIBody = lucyClientID !== null ? `X-CI-Report: True<br />` : "";
-      bodyXML = `<t:Body BodyType="HTML"><![CDATA[${lucyClientBody}${commentBody}${lucyCIBody}<br /><br />From: ${encodeHTML(message.from)}<br />Sent: ${encodeHTML(message.date.toString())}<br />To: ${encodeHTML(message.to)}<br />Subject: ${encodeHTML(message.subject)}<br /><br />${message.preview}]]></t:Body>`;
+      bodyXML = `<t:Body BodyType="HTML"><![CDATA[${lucyClientBody}${commentBody}${lucyCIBody}${objToStr(additionalHeaders, "<br />")}<br /><br />From: ${encodeHTML(message.from)}<br />Sent: ${encodeHTML(message.date.toString())}<br />To: ${encodeHTML(message.to)}<br />Subject: ${encodeHTML(message.subject)}<br /><br />${message.preview}]]></t:Body>`;
       break;
   }
   const request =

@@ -79,6 +79,7 @@ async function sendHTTPReport(
   urls: string[],
   reporterAddress: string,
   message: Message,
+  additionalHeaders: { [key: string]: string },
   lucyScenarioID: string | null = null,
   comment: string | null = null
 ) {
@@ -107,7 +108,7 @@ async function sendHTTPReport(
       await fetch(url, {
         method: "POST",
         mode: "no-cors", // Lucy server sets multiple CORS header, which Chrome/Edge doesn't like
-        headers: { "Content-Type": "text/plain; Charset=UTF-8" }, // Content-Type taken from the Lucy Outlook AddIn
+        headers: { "Content-Type": "text/plain; Charset=UTF-8", ...additionalHeaders }, // Content-Type taken from the Lucy Outlook AddIn
         body: JSON.stringify(lucyReport),
       });
       success = true;
@@ -119,12 +120,28 @@ async function sendHTTPReport(
   return success;
 }
 
+/**
+ * Returns an object with additional telemetry headers to send with each request
+ * (derived from current plugin settings).
+ */
+function getAdditionalHeaders() {
+  const headers: { [key: string]: any } = {},
+    settings = getSettings();
+  if (settings.send_telemetry) {
+    headers["Reporting-Agent"] =
+      `${Office.context.mailbox.diagnostics.hostName}/${Office.context.mailbox.diagnostics.hostVersion}`;
+    headers["Reporting-Plugin"] = settings.plugin_id;
+  }
+  return headers;
+}
+
 export async function reportFraud(mail: Office.MessageRead, comment: string): Promise<ReportResult> {
   const message = await parseMessage(mail),
     isSimulation = belongsToSimulation(message),
     settings = getSettings(),
     transport = isSimulation ? settings.simulation_transport : settings.phishing_transport,
-    parsedComment = comment.length > 0 ? comment : null;
+    parsedComment = comment.length > 0 ? comment : null,
+    additionalHeaders = getAdditionalHeaders();
   let success = true;
 
   if (transport === Transport.HTTP || transport === Transport.HTTPSMTP) {
@@ -140,6 +157,7 @@ export async function reportFraud(mail: Office.MessageRead, comment: string): Pr
         urls,
         Office.context.mailbox.userProfile.emailAddress,
         message,
+        additionalHeaders,
         lucyScenarioID,
         parsedComment
       ));
@@ -148,7 +166,15 @@ export async function reportFraud(mail: Office.MessageRead, comment: string): Pr
     let subject = "Phishing Report";
     if (settings.smtp_use_expressive_subject) subject += `: ${message.subject}`;
     success =
-      success && (await sendSMTPReport(settings.smtp_to, subject, settings.lucy_client_id, message, parsedComment));
+      success &&
+      (await sendSMTPReport(
+        settings.smtp_to,
+        subject,
+        settings.lucy_client_id,
+        message,
+        additionalHeaders,
+        parsedComment
+      ));
   }
   if (success) await moveMessageTo(mail, settings.report_action);
   if (success) {
@@ -161,7 +187,8 @@ export async function reportFraud(mail: Office.MessageRead, comment: string): Pr
 export async function reportSpam(mail: Office.MessageRead): Promise<ReportResult> {
   const message = await parseMessage(mail),
     settings = getSettings(),
-    transport = settings.phishing_transport;
+    transport = settings.phishing_transport,
+    additionalHeaders = getAdditionalHeaders();
   if (belongsToSimulation(message)) {
     const result = await reportFraud(mail, "");
     // Users expect reported spam mails to be moved away even if ReportAction is KEEP
@@ -171,7 +198,14 @@ export async function reportSpam(mail: Office.MessageRead): Promise<ReportResult
   if (transport === Transport.HTTP) return; // HTTP endpoint does not support spam reports
   let subject = "Spam Report";
   if (settings.smtp_use_expressive_subject) subject += `: ${message.subject}`;
-  let success = await sendSMTPReport(settings.smtp_to, subject, settings.lucy_client_id, message, null);
+  let success = await sendSMTPReport(
+    settings.smtp_to,
+    subject,
+    settings.lucy_client_id,
+    message,
+    additionalHeaders,
+    null
+  );
   await moveMessageTo(mail, ReportAction.JUNK);
   return success ? ReportResult.SUCCESS : ReportResult.ERROR;
 }

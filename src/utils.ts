@@ -22,3 +22,13 @@ export function fixOWAPadding() {
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+/**
+ * Returns a string representation of the given object as "key1: val1<delimiter>key2: val2<delimiter>...".
+ * The result doesn't end with a delimiter.
+ */
+export function objToStr(source: { [key: string]: string }, delimiter: string) {
+  let result = "";
+  for (let key in source) result += `${key}: ${source[key]}${delimiter}`;
+  return result;
+}
