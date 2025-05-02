@@ -14,7 +14,8 @@ export function localizeToken(token: string) {
   let re = new RegExp(keyPrefix + "(.+?)__", "g");
   return token.replace(re, (matched) => {
     const key = matched.slice(keyPrefix.length, -2);
-    const language = Office.context.displayLanguage;
+    let language = Office.context.displayLanguage.split("-")[0];
+    if (!(language in locales)) language = "en";
     return locales[language][key];
   });
 }
