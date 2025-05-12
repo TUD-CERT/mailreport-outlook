@@ -9,10 +9,10 @@
         "smtp_to": "mailreport@example.com"
     },
     "locales": {
-        "en-US": {
+        "en": {
             "reportCommentPrompt": "The E-Mail will be forwarded to your SOC."
         },
-        "de-DE": {
+        "de": {
             "reportCommentPrompt": "Die E-Mail wird an Ihr SOC weitergeleitet."
         }
     }

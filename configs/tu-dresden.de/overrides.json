@@ -14,10 +14,10 @@
         "smtp_use_expressive_subject": true
     },
     "locales": {
-        "en-US": {
+        "en": {
             "reportCommentPrompt": "The selected E-Mail will be forwarded to TUD-CERT."
         },
-        "de-DE": {
+        "de": {
             "reportCommentPrompt": "Die markierte E-Mail wird an das TUD-CERT weitergeleitet."
         }
     }

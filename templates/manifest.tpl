@@ -3,12 +3,12 @@
   <Id>__ID__</Id>
   <Version>__VERSION__</Version>
   <ProviderName>__PROVIDER_NAME__</ProviderName>
-  <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="__MSG_extensionName_en-US__">
-    <Override Locale="de-DE" Value="__MSG_extensionName_de-DE__"/>
+  <DefaultLocale>en</DefaultLocale>
+  <DisplayName DefaultValue="__MSG_extensionName_en__">
+    <Override Locale="de" Value="__MSG_extensionName_de__"/>
   </DisplayName>
-  <Description DefaultValue="__MSG_extensionDescription_en-US__">
-    <Override Locale="de-DE" Value="__MSG_extensionDescription_de-DE__"/>
+  <Description DefaultValue="__MSG_extensionDescription_en__">
+    <Override Locale="de" Value="__MSG_extensionDescription_de__"/>
   </Description>
   <IconUrl DefaultValue="__HOSTED_AT__/assets/app_64.png"/>
   <HighResolutionIconUrl DefaultValue="__HOSTED_AT__/assets/app_128.png"/>
@@ -136,34 +136,34 @@
         <bt:Url id="Options.Url" DefaultValue="__HOSTED_AT__/options.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GroupLabel" DefaultValue="__MSG_extensionGroup_en-US__">
-          <bt:Override Locale="de-DE" Value="__MSG_extensionGroup_de-DE__"/>
+        <bt:String id="GroupLabel" DefaultValue="__MSG_extensionGroup_en__">
+          <bt:Override Locale="de" Value="__MSG_extensionGroup_de__"/>
         </bt:String>
-        <bt:String id="MenuButton.Label" DefaultValue="__MSG_extensionButtonLabel_en-US__">
-          <bt:Override Locale="de-DE" Value="__MSG_extensionButtonLabel_de-DE__"/>
+        <bt:String id="MenuButton.Label" DefaultValue="__MSG_extensionButtonLabel_en__">
+          <bt:Override Locale="de" Value="__MSG_extensionButtonLabel_de__"/>
         </bt:String>
-        <bt:String id="FraudReport.Label" DefaultValue="__MSG_extensionFraudReportLabel_en-US__">
-          <bt:Override Locale="de-DE" Value="__MSG_extensionFraudReportLabel_de-DE__"/>
+        <bt:String id="FraudReport.Label" DefaultValue="__MSG_extensionFraudReportLabel_en__">
+          <bt:Override Locale="de" Value="__MSG_extensionFraudReportLabel_de__"/>
         </bt:String>
-        <bt:String id="SpamReport.Label" DefaultValue="__MSG_extensionSpamReportLabel_en-US__">
-          <bt:Override Locale="de-DE" Value="__MSG_extensionSpamReportLabel_de-DE__"/>
+        <bt:String id="SpamReport.Label" DefaultValue="__MSG_extensionSpamReportLabel_en__">
+          <bt:Override Locale="de" Value="__MSG_extensionSpamReportLabel_de__"/>
         </bt:String>
-        <bt:String id="Options.Label" DefaultValue="__MSG_extensionOptionsLabel_en-US__">
-          <bt:Override Locale="de-DE" Value="__MSG_extensionOptionsLabel_de-DE__"/>
+        <bt:String id="Options.Label" DefaultValue="__MSG_extensionOptionsLabel_en__">
+          <bt:Override Locale="de" Value="__MSG_extensionOptionsLabel_de__"/>
         </bt:String>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="MenuButton.Tooltip" DefaultValue="__MSG_extensionButtonTooltip_en-US__">
-          <bt:Override Locale="de-DE" Value="__MSG_extensionButtonTooltip_de-DE__"/>
+        <bt:String id="MenuButton.Tooltip" DefaultValue="__MSG_extensionButtonTooltip_en__">
+          <bt:Override Locale="de" Value="__MSG_extensionButtonTooltip_de__"/>
         </bt:String>
-        <bt:String id="FraudReport.Tooltip" DefaultValue="__MSG_extensionFraudReportTooltip_en-US__">
-          <bt:Override Locale="de-DE" Value="__MSG_extensionFraudReportTooltip_de-DE__"/>
+        <bt:String id="FraudReport.Tooltip" DefaultValue="__MSG_extensionFraudReportTooltip_en__">
+          <bt:Override Locale="de" Value="__MSG_extensionFraudReportTooltip_de__"/>
         </bt:String>
-        <bt:String id="SpamReport.Tooltip" DefaultValue="__MSG_extensionSpamReportTooltip_en-US__">
-          <bt:Override Locale="de-DE" Value="__MSG_extensionSpamReportTooltip_de-DE__"/>
+        <bt:String id="SpamReport.Tooltip" DefaultValue="__MSG_extensionSpamReportTooltip_en__">
+          <bt:Override Locale="de" Value="__MSG_extensionSpamReportTooltip_de__"/>
         </bt:String>
-        <bt:String id="Options.Tooltip" DefaultValue="__MSG_extensionOptionsTooltip_en-US__">
-          <bt:Override Locale="de-DE" Value="__MSG_extensionOptionsTooltip_de-DE__"/>
+        <bt:String id="Options.Tooltip" DefaultValue="__MSG_extensionOptionsTooltip_en__">
+          <bt:Override Locale="de" Value="__MSG_extensionOptionsTooltip_de__"/>
         </bt:String>
       </bt:LongStrings>
     </Resources>
