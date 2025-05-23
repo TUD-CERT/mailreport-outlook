@@ -17,7 +17,7 @@ export async function fetchMessage(ewsId: string) {
     "  <soap:Body>" +
     "    <m:GetItem>" +
     "      <m:ItemShape>" +
-    "        <t:BaseShape>IdOnly</t:BaseShape>' +" +
+    "        <t:BaseShape>IdOnly</t:BaseShape>" +
     "        <t:IncludeMimeContent>true</t:IncludeMimeContent>" +
     "        <t:AdditionalProperties>" +
     '          <t:FieldURI FieldURI="item:InternetMessageHeaders" />' +
