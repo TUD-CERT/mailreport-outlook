@@ -65,14 +65,16 @@ class ConfigGeneratorPlugin {
       fs.writeFileSync(localesOutputPath, JSON.stringify(resultLocales));
 
       // Generate manifest.xml
-      const manifestOutputPath = path.join(__dirname, "manifest.xml");
+      const manifestOutputPath = path.join(__dirname, "manifest.xml"),
+        hostedAt = this.isDev ? LOCAL_DEV_URL : overrides.manifest.hosted_at;
       console.log(`Generating ${manifestOutputPath}`);
       let manifest = fs.readFileSync(path.join(__dirname, "templates", "manifest.tpl"), { encoding: "utf8" });
       manifest = manifest
         .replaceAll("__ID__", overrides.manifest.id)
         .replaceAll("__VERSION__", overrides.manifest.version)
         .replaceAll("__PROVIDER_NAME__", overrides.manifest.provider_name)
-        .replaceAll("__HOSTED_AT__", this.isDev ? LOCAL_DEV_URL : overrides.manifest.hosted_at);
+        .replaceAll("__HOSTED_AT__", hostedAt)
+        .replaceAll("__DOMAIN__", new URL(hostedAt).origin);
       for (const locale in resultLocales) {
         for (const tag in resultLocales[locale]) {
           manifest = manifest.replaceAll(`__MSG_${tag}_${locale}__`, resultLocales[locale][tag]);

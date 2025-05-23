@@ -13,7 +13,7 @@
   <IconUrl DefaultValue="__HOSTED_AT__/assets/app_64.png"/>
   <HighResolutionIconUrl DefaultValue="__HOSTED_AT__/assets/app_128.png"/>
   <AppDomains>
-    <AppDomain>__HOSTED_AT__</AppDomain>
+    <AppDomain>__DOMAIN__</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Mailbox"/>
