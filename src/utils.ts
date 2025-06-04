@@ -32,3 +32,13 @@ export function objToStr(source: { [key: string]: string }, delimiter: string) {
   for (let key in source) result += `${key}: ${source[key]}${delimiter}`;
   return result;
 }
+
+/**
+ * Shows a div.view defined by selector and hides all other div.view elements.
+ * Used to switch between multiple "views" within a single document.
+ */
+export function showView(selector: string) {
+  const $unselected = document.querySelectorAll(`div.view:not(${selector})`);
+  document.querySelector(selector).classList.remove("hide");
+  for (const e of $unselected) e.classList.add("hide");
+}

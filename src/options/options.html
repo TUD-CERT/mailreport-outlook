@@ -18,81 +18,87 @@
 
 <body class="ms-font-m ms-Fabric hide">
     <main id="mailreport-options">
-        <form>
-            <h1 class="ms-fontColor-themeDarker ms-font-xl">__MSG_optionsHeader__</h1>
-            <div id="mailreport-report_action" class="ms-Dropdown">
-                <label for="mailreport-report_action_select" class="ms-Label">__MSG_optionsActionLabel__</label>
-                <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
-                <select id="mailreport-report_action_select" class="ms-Dropdown-select">
-                    <option value="junk">__MSG_optionsActionJunk__</option>
-                    <option value="trash">__MSG_optionsActionTrash__</option>
-                    <option value="keep">__MSG_optionsActionKeep__</option>
-                </select>
-            </div>
-            
-            <div id="mailreport-show_advanced" class="ms-CheckBox hide">
-                <input class="ms-CheckBox-input" type="checkbox" id="mailreport-show_advanced_toggle" />
-                <label role="checkbox" for="mailreport-show_advanced_toggle" class="ms-CheckBox-field" aria-checked="false">
-                    <span class="ms-Label">__MSG_optionsShowAdvanced__</span>
-                </label>
-            </div>
-
-            <div id="mailreport-phishing_transport" class="ms-Dropdown mailreport-advanced hide">
-                <label for="mailreport-phishing_transport_select" class="ms-Label">__MSG_optionsPhishingTransportLabel__</label>
-                <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
-                <select id="mailreport-phishing_transport_select" class="ms-Dropdown-select"> 
-                    <option value="http">HTTP(S)</option>
-                    <option value="smtp">SMTP</option>
-                    <option value="http+smtp">HTTP(S)+SMTP</option>
-                </select>
-            </div>
-
-            <div id="mailreport-simulation_transport" class="ms-Dropdown mailreport-advanced hide">
-                <label for="mailreport-simulation_transport_select" class="ms-Label">__MSG_optionsSimulationTransportLabel__</label>
-                <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
-                <select id="mailreport-simulation_transport_select" class="ms-Dropdown-select"> 
-                    <option value="http">HTTP(S)</option>
-                    <option value="smtp">SMTP</option>
-                    <option value="http+smtp">HTTP(S)+SMTP</option>
-                </select>
-            </div>
-
-            <div class="mailreport-advanced hide">
-                <label for="mailreport-lucy_client_id" class="ms-Label">Lucy Client-ID</label>
-                <div class="ms-TextField">
-                    <input class="ms-TextField-field" type="number" id="mailreport-lucy_client_id" min="1" max="99" step="1" placeholder="optional" />
+        <div id="mailreport-options-form" class="view">
+            <form>
+                <h1 class="ms-fontColor-themeDarker ms-font-xl">__MSG_optionsHeader__</h1>
+                <div id="mailreport-report_action" class="ms-Dropdown">
+                    <label for="mailreport-report_action_select" class="ms-Label">__MSG_optionsActionLabel__</label>
+                    <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
+                    <select id="mailreport-report_action_select" class="ms-Dropdown-select">
+                        <option value="junk">__MSG_optionsActionJunk__</option>
+                        <option value="trash">__MSG_optionsActionTrash__</option>
+                        <option value="keep">__MSG_optionsActionKeep__</option>
+                    </select>
                 </div>
-            </div>
-
-            <div class="mailreport-advanced hide">
-                <label for="mailreport-http_lucy_server" class="ms-Label mailreport-http"><strong>HTTP(S):</strong> __MSG_optionsLucyServerLabel__</label>
-                <div class="mailreport-http">
-                    <div class="ms-TextField">
-                        <code>https://</code>
-                        <input class="ms-TextField-field" type="text" id="mailreport-http_lucy_server" placeholder="example.com" required />
-                        <code>/phishing-report</code>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mailreport-advanced hide">
-                <label class="ms-Label mailreport-smtp" for="mailreport-smtp_to"><strong>SMTP:</strong> __MSG_optionsSMTPRecipientLabel__</label>
-                <input class="ms-TextField-field mailreport-smtp" type="email" id="mailreport-smtp_to" placeholder="reports@example.com" required />
-                <div id="mailreport-toggle_expressive_subject" class="ms-CheckBox mailreport-smtp">
-                    <input class="ms-CheckBox-input" type="checkbox" id="mailreport-smtp_use_expressive_subject" />
-                    <label role="checkbox" for="mailreport-smtp_use_expressive_subject" class="ms-CheckBox-field" aria-checked="false">
-                        <span class="ms-Label">__MSG_optionsSMTPExpressiveSubject__</span>
+                
+                <div id="mailreport-show_advanced" class="ms-CheckBox hide">
+                    <input class="ms-CheckBox-input" type="checkbox" id="mailreport-show_advanced_toggle" />
+                    <label role="checkbox" for="mailreport-show_advanced_toggle" class="ms-CheckBox-field" aria-checked="false">
+                        <span class="ms-Label">__MSG_optionsShowAdvanced__</span>
                     </label>
                 </div>
-            </div>
 
-            <button type="button" class="ms-Button mailreport-advanced hide" id="mailreport-options-reset">
-                <span class="ms-Button-Label">__MSG_optionsReset__</span>
-            </button>
-            <button type="submit" class="ms-Button ms-Button--primary" id="mailreport-options-save">
-                <span class="ms-Button-label">__MSG_save__</span>
-            </button>
-        </form>
+                <div id="mailreport-phishing_transport" class="ms-Dropdown mailreport-advanced hide">
+                    <label for="mailreport-phishing_transport_select" class="ms-Label">__MSG_optionsPhishingTransportLabel__</label>
+                    <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
+                    <select id="mailreport-phishing_transport_select" class="ms-Dropdown-select"> 
+                        <option value="http">HTTP(S)</option>
+                        <option value="smtp">SMTP</option>
+                        <option value="http+smtp">HTTP(S)+SMTP</option>
+                    </select>
+                </div>
+
+                <div id="mailreport-simulation_transport" class="ms-Dropdown mailreport-advanced hide">
+                    <label for="mailreport-simulation_transport_select" class="ms-Label">__MSG_optionsSimulationTransportLabel__</label>
+                    <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--ChevronDown"></i>
+                    <select id="mailreport-simulation_transport_select" class="ms-Dropdown-select"> 
+                        <option value="http">HTTP(S)</option>
+                        <option value="smtp">SMTP</option>
+                        <option value="http+smtp">HTTP(S)+SMTP</option>
+                    </select>
+                </div>
+
+                <div class="mailreport-advanced hide">
+                    <label for="mailreport-lucy_client_id" class="ms-Label">Lucy Client-ID</label>
+                    <div class="ms-TextField">
+                        <input class="ms-TextField-field" type="number" id="mailreport-lucy_client_id" min="1" max="99" step="1" placeholder="optional" />
+                    </div>
+                </div>
+
+                <div class="mailreport-advanced hide">
+                    <label for="mailreport-http_lucy_server" class="ms-Label mailreport-http"><strong>HTTP(S):</strong> __MSG_optionsLucyServerLabel__</label>
+                    <div class="mailreport-http">
+                        <div class="ms-TextField">
+                            <code>https://</code>
+                            <input class="ms-TextField-field" type="text" id="mailreport-http_lucy_server" placeholder="example.com" required />
+                            <code>/phishing-report</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mailreport-advanced hide">
+                    <label class="ms-Label mailreport-smtp" for="mailreport-smtp_to"><strong>SMTP:</strong> __MSG_optionsSMTPRecipientLabel__</label>
+                    <input class="ms-TextField-field mailreport-smtp" type="email" id="mailreport-smtp_to" placeholder="reports@example.com" required />
+                    <div id="mailreport-toggle_expressive_subject" class="ms-CheckBox mailreport-smtp">
+                        <input class="ms-CheckBox-input" type="checkbox" id="mailreport-smtp_use_expressive_subject" />
+                        <label role="checkbox" for="mailreport-smtp_use_expressive_subject" class="ms-CheckBox-field" aria-checked="false">
+                            <span class="ms-Label">__MSG_optionsSMTPExpressiveSubject__</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="button" class="ms-Button mailreport-advanced hide" id="mailreport-options-reset">
+                    <span class="ms-Button-Label">__MSG_optionsReset__</span>
+                </button>
+                <button type="submit" class="ms-Button ms-Button--primary" id="mailreport-options-save">
+                    <span class="ms-Button-label">__MSG_save__</span>
+                </button>
+            </form>
+        </div>
+        <div id="mailreport-options-close" class="view hide">
+            <div class="mailreport-close-pointer">&#8593;</div>
+            <p>__MSG_manualClose__</p>
+        </div>
     </main>
 </body>
 

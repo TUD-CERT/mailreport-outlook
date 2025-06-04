@@ -2,11 +2,19 @@
   display: none !important;
  }
 
+ div.centered {
+  margin-left: auto;
+  margin-right: auto;
+ }
+
+ span.centered {
+  text-align: center;
+ }
+
  .view {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
  }
 
  .view > p {
@@ -25,7 +33,15 @@
 textarea {
   box-sizing: border-box;
   resize: none;
-  width: 100%;
+}
+
+code {
+  background-color: lightgrey;
+}
+
+/* Fix dialog formatting in Outlook Desktop */
+body.mailreport-dialog {
+  margin: 0 1rem 1rem 1rem;
 }
 
  #spinner {
@@ -38,13 +54,14 @@ textarea {
   margin-bottom: .3rem;
 }
 
-/* Fix dialog formatting in Outlook Desktop */
-#mailreport-simulation-ack {
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+div.mailreport-close-pointer {
+  font-size: 2rem;
+  position: absolute;
+  top: 0;
+  right: 0;
 }

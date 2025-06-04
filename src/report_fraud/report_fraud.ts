@@ -1,16 +1,11 @@
 /* global document, HTMLTextAreaElement, Office */
+import { outlook2016CompatMode } from "../compat";
 import { localizeToken, localizeDocument } from "../i18n";
 import { ReportAction, ReportResult } from "../models";
 import { reportFraud } from "../reporting";
 import { getSettings } from "../settings";
 import { showSimulationAcknowledgement } from "../simulation";
-import { fixOWAPadding, sleep } from "../utils";
-
-function showView(selector: string) {
-  const $unselected = document.querySelectorAll(`div.view:not(${selector})`);
-  document.querySelector(selector).classList.remove("hide");
-  for (const e of $unselected) e.classList.add("hide");
-}
+import { fixOWAPadding, showView, sleep } from "../utils";
 
 async function handleFraudReport() {
   showView("#mailreport-fraud-pending");
@@ -28,6 +23,11 @@ async function handleFraudReport() {
       showView("#mailreport-fraud-error");
       await sleep(5000);
       break;
+  }
+
+  if (outlook2016CompatMode()) {
+    showView("#mailreport-fraud-close");
+    return;
   }
   Office.context.ui.closeContainer();
 }

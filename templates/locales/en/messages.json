@@ -12,6 +12,7 @@
     "extensionOptionsTooltip": "View and change reporting plugin configuration.",
     "close": "Close",
     "save": "Save",
+    "manualClose": "This window can now be closed.",
     "optionsShowAdvanced": "Show advanced settings",
     "optionsHeader": "Configuration",
     "optionsReset": "Reset all settings",

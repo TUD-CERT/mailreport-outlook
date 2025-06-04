@@ -1,8 +1,9 @@
 /* global console, document, fabric, Element, HTMLButtonElement, HTMLElement, HTMLFormElement, HTMLInputElement, HTMLSelectElement, NodeListOf, Office */
+import { outlook2016CompatMode } from "../compat";
 import { localizeDocument } from "../i18n";
 import { ReportAction, Settings, Transport } from "../models";
 import { getDefaults, getSettings, setSettings } from "../settings";
-import { fixOWAPadding } from "../utils";
+import { fixOWAPadding, showView } from "../utils";
 
 class OptionsForm {
   advancedElements: NodeListOf<Element>;
@@ -62,6 +63,10 @@ class OptionsForm {
       const settings = getFormSettings(this, getSettings());
       setSettings(settings);
       console.log("saved settings", settings);
+      if (outlook2016CompatMode()) {
+        showView("#mailreport-options-close");
+        return;
+      }
       Office.context.ui.closeContainer();
     });
   }

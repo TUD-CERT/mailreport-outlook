@@ -12,6 +12,7 @@
     "extensionOptionsTooltip": "Anzeigen und Ändern der Konfiguration des Melde-Plugins.",
     "close": "Schließen",
     "save": "Speichern",
+    "manualClose": "Dieses Fenster kannn nun geschlossen werden.",
     "optionsShowAdvanced": "Erweiterte Einstellungen anzeigen",
     "optionsHeader": "Konfiguration",
     "optionsReset": "Alle Einstellungen zurücksetzen",
