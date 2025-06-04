@@ -1,8 +1,9 @@
-/* global console, fetch, Office */
+/* global console, Office, window */
 import { BodyType, Message, Transport } from "./models";
 import { fetchMessage, moveMessageTo, sendSMTPReport } from "./ews";
 import { ReportAction, ReportResult } from "./models";
 import { getSettings } from "./settings";
+import "whatwg-fetch";
 
 async function parseMessage(email: Office.MessageRead): Promise<Message> {
   // The MailBox API doesn't permit us to programatically determine the original MIME content structure.
@@ -105,7 +106,7 @@ async function sendHTTPReport(
     else console.log("Sending report as ", reporterAddress, " via HTTP(S) to ", url);
     // Send report
     try {
-      await fetch(url, {
+      await window.fetch(url, {
         method: "POST",
         mode: "no-cors", // Lucy server sets multiple CORS header, which Chrome/Edge doesn't like
         headers: { "Content-Type": "text/plain; Charset=UTF-8", ...additionalHeaders }, // Content-Type taken from the Lucy Outlook AddIn

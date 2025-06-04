@@ -1,4 +1,4 @@
-/* global Attr, document, Node, Office, XPathResult */
+/* global document, Element, Node, Office */
 /*
  * Derived from:
  * http://github.com/piroor/webextensions-lib-l10n
@@ -21,28 +21,19 @@ export function localizeToken(token: string) {
 }
 
 function updateSubtree(node: Node) {
-  const texts = document.evaluate(
-    'descendant::text()[contains(self::text(), "' + keyPrefix + '")]',
-    node,
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null
-  );
-  for (let i = 0; i < texts.snapshotLength; i++) {
-    const text = texts.snapshotItem(i);
-    if (text.nodeValue.includes(keyPrefix)) text.nodeValue = localizeToken(text.nodeValue);
-  }
-
-  const attributes = document.evaluate(
-    'descendant::*/attribute::*[contains(., "' + keyPrefix + '")]',
-    node,
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null
-  );
-  for (let i = 0; i < attributes.snapshotLength; i++) {
-    const attribute = <Attr>attributes.snapshotItem(i);
-    if (attribute.value.includes(keyPrefix)) attribute.value = localizeToken(attribute.value);
+  if (node.nodeType === Node.TEXT_NODE) {
+    if (node.nodeValue && node.nodeValue.includes(keyPrefix)) node.nodeValue = localizeToken(node.nodeValue);
+  } else {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const element = node as Element;
+      for (let i = 0; i < element.attributes.length; i++) {
+        const attr = element.attributes[i];
+        if (attr.value.includes(keyPrefix)) attr.value = localizeToken(attr.value);
+      }
+    }
+    for (let i = 0; i < node.childNodes.length; i++) {
+      updateSubtree(node.childNodes[i]);
+    }
   }
 }
 

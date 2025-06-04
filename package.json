@@ -24,10 +24,12 @@
   "dependencies": {
     "core-js": "^3.36.0",
     "regenerator-runtime": "^0.14.1",
-    "urijs": "^1.19.11"
+    "urijs": "^1.19.11",
+    "whatwg-fetch": "^3.6.20"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.27.2",
     "@babel/preset-typescript": "^7.23.3",
     "@types/office-js": "^1.0.377",
     "@types/office-runtime": "^1.0.35",
