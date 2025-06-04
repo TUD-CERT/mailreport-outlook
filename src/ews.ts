@@ -29,8 +29,12 @@ export async function fetchMessage(ewsId: string) {
     "    </m:GetItem>" +
     "  </soap:Body>" +
     "</soap:Envelope>";
-  return await new Promise<{ raw: string; headers: object }>((resolve) => {
+  return await new Promise<{ raw: string; headers: object }>((resolve, reject) => {
     Office.context.mailbox.makeEwsRequestAsync(request, function (result) {
+      if (result.value === undefined || result.value.length === 0) {
+        reject("EWS error");
+        return;
+      }
       const parser = new DOMParser(),
         doc = parser.parseFromString(result.value, "text/xml"),
         base64Raw = doc.getElementsByTagName("t:MimeContent")[0].textContent,

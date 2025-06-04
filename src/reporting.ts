@@ -1,7 +1,7 @@
 /* global console, Office, window */
-import { BodyType, Message, Transport } from "./models";
+import { BodyType, Message, ReportResultStatus, Transport } from "./models";
 import { fetchMessage, moveMessageTo, sendSMTPReport } from "./ews";
-import { ReportAction, ReportResult } from "./models";
+import { ReportAction, ReportResult, Settings } from "./models";
 import { getSettings } from "./settings";
 import "whatwg-fetch";
 
@@ -108,7 +108,7 @@ async function sendHTTPReport(
     try {
       await window.fetch(url, {
         method: "POST",
-        mode: "no-cors", // Lucy server sets multiple CORS header, which Chrome/Edge doesn't like
+        mode: "no-cors", // Lucy server sets multiple CORS headers, which Chrome/Edge doesn't like
         headers: { "Content-Type": "text/plain; Charset=UTF-8", ...additionalHeaders }, // Content-Type taken from the Lucy Outlook AddIn
         body: JSON.stringify(lucyReport),
       });
@@ -116,6 +116,7 @@ async function sendHTTPReport(
       break;
     } catch (err) {
       console.log("Could not send report via HTTP(S)", err);
+      throw err;
     }
   }
   return success;
@@ -137,76 +138,85 @@ function getAdditionalHeaders() {
 }
 
 export async function reportFraud(mail: Office.MessageRead, comment: string): Promise<ReportResult> {
-  const message = await parseMessage(mail),
-    isSimulation = belongsToSimulation(message),
-    settings = getSettings(),
-    transport = isSimulation ? settings.simulation_transport : settings.phishing_transport,
-    parsedComment = comment.length > 0 ? comment : null,
+  let message: Message,
+    isSimulation: boolean,
+    settings: Settings,
+    transport: Transport,
+    parsedComment: string | null,
+    additionalHeaders: { [key: string]: any };
+  try {
+    message = await parseMessage(mail);
+    isSimulation = belongsToSimulation(message);
+    settings = getSettings();
+    transport = isSimulation ? settings.simulation_transport : settings.phishing_transport;
+    parsedComment = comment.length > 0 ? comment : null;
     additionalHeaders = getAdditionalHeaders();
-  let success = true;
 
-  if (transport === Transport.HTTP || transport === Transport.HTTPSMTP) {
-    let lucyReportURL = `https://${settings.lucy_server}/phishing-report`;
-    if (settings.lucy_client_id !== null) lucyReportURL += `/${settings.lucy_client_id}`;
-    const lucyScenarioID = isSimulation ? getScenarioID(message) : null;
-    let urls = isSimulation ? getReportingURLs(message) : [lucyReportURL];
-    // If invalid Lucy headers are set, fall back to the configured Lucy instance
-    if (urls.length === 0) urls = [lucyReportURL];
-    success =
-      success &&
-      (await sendHTTPReport(
+    if (transport === Transport.HTTP || transport === Transport.HTTPSMTP) {
+      let lucyReportURL = `https://${settings.lucy_server}/phishing-report`;
+      if (settings.lucy_client_id !== null) lucyReportURL += `/${settings.lucy_client_id}`;
+      const lucyScenarioID = isSimulation ? getScenarioID(message) : null;
+      let urls = isSimulation ? getReportingURLs(message) : [lucyReportURL];
+      // If invalid Lucy headers are set, fall back to the configured Lucy instance
+      if (urls.length === 0) urls = [lucyReportURL];
+      await sendHTTPReport(
         urls,
         Office.context.mailbox.userProfile.emailAddress,
         message,
         additionalHeaders,
         lucyScenarioID,
         parsedComment
-      ));
-  }
-  if (transport === Transport.SMTP || transport === Transport.HTTPSMTP) {
-    let subject = "Phishing Report";
-    if (settings.smtp_use_expressive_subject) subject += `: ${message.subject}`;
-    success =
-      success &&
-      (await sendSMTPReport(
+      );
+    }
+    if (transport === Transport.SMTP || transport === Transport.HTTPSMTP) {
+      let subject = "Phishing Report";
+      if (settings.smtp_use_expressive_subject) subject += `: ${message.subject}`;
+      await sendSMTPReport(
         settings.smtp_to,
         subject,
         settings.lucy_client_id,
         message,
         additionalHeaders,
         parsedComment
-      ));
+      );
+    }
+    await moveMessageTo(mail, settings.report_action);
+    if (isSimulation) return new ReportResult(ReportResultStatus.SIMULATION);
+    return new ReportResult(ReportResultStatus.SUCCESS);
+  } catch (err) {
+    const result = new ReportResult(ReportResultStatus.ERROR);
+    result.diagnosis = err.toString();
+    return result;
   }
-  if (success) await moveMessageTo(mail, settings.report_action);
-  if (success) {
-    if (isSimulation) return ReportResult.SIMULATION;
-    return ReportResult.SUCCESS;
-  }
-  return ReportResult.ERROR;
 }
 
 export async function reportSpam(mail: Office.MessageRead): Promise<ReportResult> {
-  const message = await parseMessage(mail),
-    settings = getSettings(),
-    transport = settings.phishing_transport,
+  let message: Message, settings: Settings, transport: Transport, additionalHeaders: { [key: string]: any };
+  try {
+    message = await parseMessage(mail);
+    settings = getSettings();
+    transport = settings.phishing_transport;
     additionalHeaders = getAdditionalHeaders();
-  if (belongsToSimulation(message)) {
-    const result = await reportFraud(mail, "");
-    // Users expect reported spam mails to be moved away even if ReportAction is KEEP
-    if (settings.report_action === ReportAction.KEEP) await moveMessageTo(mail, ReportAction.JUNK);
+
+    if (belongsToSimulation(message)) {
+      const result = await reportFraud(mail, "");
+      // Users expect reported spam mails to be moved away even if ReportAction is KEEP
+      if (settings.report_action === ReportAction.KEEP) await moveMessageTo(mail, ReportAction.JUNK);
+      return result;
+    }
+    if (transport === Transport.HTTP) {
+      const result = new ReportResult(ReportResultStatus.ERROR);
+      result.diagnosis = "HTTP endpoint does not support spam reports";
+      return result;
+    }
+    let subject = "Spam Report";
+    if (settings.smtp_use_expressive_subject) subject += `: ${message.subject}`;
+    await sendSMTPReport(settings.smtp_to, subject, settings.lucy_client_id, message, additionalHeaders, null);
+    await moveMessageTo(mail, ReportAction.JUNK);
+    return new ReportResult(ReportResultStatus.SUCCESS);
+  } catch (err) {
+    const result = new ReportResult(ReportResultStatus.ERROR);
+    result.diagnosis = err.toString();
     return result;
   }
-  if (transport === Transport.HTTP) return; // HTTP endpoint does not support spam reports
-  let subject = "Spam Report";
-  if (settings.smtp_use_expressive_subject) subject += `: ${message.subject}`;
-  let success = await sendSMTPReport(
-    settings.smtp_to,
-    subject,
-    settings.lucy_client_id,
-    message,
-    additionalHeaders,
-    null
-  );
-  await moveMessageTo(mail, ReportAction.JUNK);
-  return success ? ReportResult.SUCCESS : ReportResult.ERROR;
 }

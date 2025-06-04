@@ -9,7 +9,7 @@ export enum ReportAction {
   KEEP = "keep",
 }
 
-export enum ReportResult {
+export enum ReportResultStatus {
   SUCCESS,
   SIMULATION,
   ERROR,
@@ -43,4 +43,13 @@ export class Message {
   preview: string;
   previewType: BodyType;
   raw: string;
+}
+
+export class ReportResult {
+  status: ReportResultStatus;
+  diagnosis: string;
+
+  constructor(status: ReportResultStatus) {
+    this.status = status;
+  }
 }

@@ -1,7 +1,7 @@
-/* global document, HTMLTextAreaElement, Office */
+/* global document, HTMLParagraphElement, HTMLTextAreaElement, Office */
 import { outlook2016CompatMode } from "../compat";
 import { localizeToken, localizeDocument } from "../i18n";
-import { ReportAction, ReportResult } from "../models";
+import { ReportAction, ReportResultStatus } from "../models";
 import { reportFraud } from "../reporting";
 import { getSettings } from "../settings";
 import { showSimulationAcknowledgement } from "../simulation";
@@ -11,20 +11,20 @@ async function handleFraudReport() {
   showView("#mailreport-fraud-pending");
   const comment = (<HTMLTextAreaElement>document.getElementById("reportComment")).value;
   const reportResult = await reportFraud(Office.context.mailbox.item, comment);
-  switch (reportResult) {
-    case ReportResult.SUCCESS:
+  switch (reportResult.status) {
+    case ReportResultStatus.SUCCESS:
       showView("#mailreport-fraud-success");
       await sleep(2000);
       break;
-    case ReportResult.SIMULATION:
+    case ReportResultStatus.SIMULATION:
       await showSimulationAcknowledgement();
       break;
-    case ReportResult.ERROR:
+    case ReportResultStatus.ERROR:
       showView("#mailreport-fraud-error");
-      await sleep(5000);
-      break;
+      (<HTMLParagraphElement>document.querySelector("#mailreport-fraud-error-diag")).textContent =
+        reportResult.diagnosis;
+      return; // Do not close this view automatically
   }
-
   if (outlook2016CompatMode()) {
     showView("#mailreport-fraud-close");
     return;
