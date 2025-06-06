@@ -5,7 +5,7 @@ import { ReportAction, ReportResultStatus } from "../models";
 import { reportFraud } from "../reporting";
 import { getSettings } from "../settings";
 import { showSimulationAcknowledgement } from "../simulation";
-import { fixOWAPadding, showView, sleep } from "../utils";
+import { applyTheme, fixOWAPadding, showView, sleep } from "../utils";
 
 async function handleFraudReport() {
   showView("#mailreport-fraud-pending");
@@ -34,6 +34,8 @@ async function handleFraudReport() {
 
 Office.onReady((info) => {
   localizeDocument();
+  applyTheme();
+
   // Display the reporting action depending on current settings
   const $reportAction = document.getElementById("mailreport-fraud-action");
   switch (getSettings().report_action) {

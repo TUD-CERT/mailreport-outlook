@@ -3,7 +3,7 @@ import { outlook2016CompatMode } from "../compat";
 import { localizeDocument } from "../i18n";
 import { ReportAction, Settings, Transport } from "../models";
 import { getDefaults, getSettings, setSettings } from "../settings";
-import { fixOWAPadding, showView } from "../utils";
+import { applyTheme, fixOWAPadding, showView } from "../utils";
 
 class OptionsForm {
   advancedElements: NodeListOf<Element>;
@@ -182,6 +182,7 @@ function showPermittedElements(form: OptionsForm, settings: Settings) {
 
 Office.onReady(() => {
   localizeDocument();
+  applyTheme();
   fixOWAPadding();
   const form = new OptionsForm();
   form.initialize();

@@ -21,6 +21,13 @@ export enum Transport {
   HTTPSMTP = "http+smtp",
 }
 
+export enum OfficeThemeId {
+  Colorful = "#000000",
+  DarkGray = "#000001",
+  Black = "#000002",
+  White = "#000003",
+}
+
 export class Settings {
   lucy_client_id: number | null;
   lucy_server: string;

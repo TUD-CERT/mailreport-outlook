@@ -9,7 +9,7 @@ Office.onReady();
 
 async function showErrorDialog(diagnosis: string) {
   const url = new URI("error.html").addQuery("diag", diagnosis).absoluteTo(window.location).toString();
-  const dialogOptions = { width: 60, height: 25, displayInIframe: true };
+  const dialogOptions = { width: 60, height: 26, displayInIframe: true };
   return await new Promise((resolve) => {
     Office.context.ui.displayDialogAsync(url, dialogOptions, (asyncResult: Office.AsyncResult<Office.Dialog>) => {
       const dialog = asyncResult.value;
