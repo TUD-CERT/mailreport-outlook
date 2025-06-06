@@ -130,8 +130,9 @@ function getAdditionalHeaders() {
   const headers: { [key: string]: any } = {},
     settings = getSettings();
   if (settings.send_telemetry) {
+    const platform = Office.context.diagnostics === undefined ? "" : ` @ ${Office.context.diagnostics.platform}`;
     headers["Reporting-Agent"] =
-      `${Office.context.mailbox.diagnostics.hostName}/${Office.context.mailbox.diagnostics.hostVersion}`;
+      `${Office.context.mailbox.diagnostics.hostName}/${Office.context.mailbox.diagnostics.hostVersion}${platform}`;
     headers["Reporting-Plugin"] = settings.plugin_id;
   }
   return headers;
