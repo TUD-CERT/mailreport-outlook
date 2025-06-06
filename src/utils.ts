@@ -1,5 +1,6 @@
 /* global document, localStorage, Office, setTimeout */
 import { OfficeThemeId } from "./models";
+import { isMacOS, isOWA } from "./compat";
 
 /**
  * Encodes various characters to their safe HTML counterparts. Used to prevent HTML interpretation of
@@ -10,12 +11,11 @@ export function encodeHTML(str: string): string {
 }
 
 /**
- * In case we're running inside Outlook Web App (OWA), adds some
- * padding to the task pane content to match the padding of the desktop version.
+ * In case we're running inside Outlook Web App (OWA) or on Mac, add some
+ * padding to the task pane content to match the padding of the Windows desktop versions.
  */
-export function fixOWAPadding() {
-  if (Office.context.mailbox.diagnostics.hostName === "OutlookWebApp")
-    document.documentElement.style.marginLeft = "8px";
+export function fixTaskPanePadding() {
+  if (isOWA() || isMacOS()) document.documentElement.style.marginLeft = "8px";
 }
 
 /**
@@ -46,10 +46,15 @@ export function showView(selector: string) {
 }
 
 /**
- * If the Office.OfficeTheme interface is supported,
- * update CSS styles with the currently selected theme.
+ * Depending on availability of the Office.OfficeTheme interface,
+ * update DOM styles based on the currently selected theme.
  */
 export function applyTheme() {
+  const $body = document.querySelector("body");
+  // Set base background color for Outlook without OfficeTheme support
+  $body.style.backgroundColor = "white";
+  if (isMacOS()) $body.style.backgroundColor = "#f1f1f0";
+
   // Use localStorage as cache to pass the currently selected theme to dialogs
   const cachedTheme = localStorage.getItem("mailreport-theme");
   let theme = Office.context.officeTheme;
@@ -63,7 +68,7 @@ export function applyTheme() {
   const selectedTheme = theme.themeId as unknown as OfficeThemeId;
 
   // Always set a solid background color to fix rendering issues on Outlook 2024 LTSC, which has a transparent background by default.
-  document.querySelector("body").style.backgroundColor = theme.bodyBackgroundColor;
+  $body.style.backgroundColor = theme.bodyBackgroundColor;
 
   if (selectedTheme === OfficeThemeId.Colorful || selectedTheme === OfficeThemeId.White) return;
 

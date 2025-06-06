@@ -1,9 +1,9 @@
 /* global console, document, fabric, Element, HTMLButtonElement, HTMLElement, HTMLFormElement, HTMLInputElement, HTMLSelectElement, NodeListOf, Office */
-import { outlook2016CompatMode } from "../compat";
+import { isOutlook2016 } from "../compat";
 import { localizeDocument } from "../i18n";
 import { ReportAction, Settings, Transport } from "../models";
 import { getDefaults, getSettings, setSettings } from "../settings";
-import { applyTheme, fixOWAPadding, showView } from "../utils";
+import { applyTheme, fixTaskPanePadding, showView } from "../utils";
 
 class OptionsForm {
   advancedElements: NodeListOf<Element>;
@@ -63,7 +63,7 @@ class OptionsForm {
       const settings = getFormSettings(this, getSettings());
       setSettings(settings);
       console.log("saved settings", settings);
-      if (outlook2016CompatMode()) {
+      if (isOutlook2016()) {
         showView("#mailreport-options-close");
         return;
       }
@@ -183,7 +183,7 @@ function showPermittedElements(form: OptionsForm, settings: Settings) {
 Office.onReady(() => {
   localizeDocument();
   applyTheme();
-  fixOWAPadding();
+  fixTaskPanePadding();
   const form = new OptionsForm();
   form.initialize();
   const settings = getSettings();

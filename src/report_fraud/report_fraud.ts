@@ -1,11 +1,11 @@
 /* global document, HTMLParagraphElement, HTMLTextAreaElement, Office */
-import { outlook2016CompatMode } from "../compat";
+import { isOutlook2016 } from "../compat";
 import { localizeToken, localizeDocument } from "../i18n";
 import { ReportAction, ReportResultStatus } from "../models";
 import { reportFraud } from "../reporting";
 import { getSettings } from "../settings";
 import { showSimulationAcknowledgement } from "../simulation";
-import { applyTheme, fixOWAPadding, showView, sleep } from "../utils";
+import { applyTheme, fixTaskPanePadding, showView, sleep } from "../utils";
 
 async function handleFraudReport() {
   showView("#mailreport-fraud-pending");
@@ -25,7 +25,7 @@ async function handleFraudReport() {
         reportResult.diagnosis;
       return; // Do not close this view automatically
   }
-  if (outlook2016CompatMode()) {
+  if (isOutlook2016()) {
     showView("#mailreport-fraud-close");
     return;
   }
@@ -46,7 +46,7 @@ Office.onReady((info) => {
       $reportAction.textContent = localizeToken("__MSG_reportCommentTrash__");
       break;
   }
-  fixOWAPadding();
+  fixTaskPanePadding();
   if (info.host === Office.HostType.Outlook) {
     document.getElementById("sendFraudReport").onclick = handleFraudReport;
   }
