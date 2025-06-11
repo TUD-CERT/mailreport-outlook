@@ -21,10 +21,6 @@ p.centered, span.centered {
   margin-top: 0;
 }
 
-body {
-  margin: 0 8px 0 0;
-}
-
 button {
   width: 100%;
   margin-top: 10px !important;
@@ -37,6 +33,10 @@ textarea {
 
 code {
   background-color: lightgrey;
+}
+
+body {
+  margin: 0 8px 0 0;
 }
 
 /* Fix dialog formatting in Outlook Desktop */

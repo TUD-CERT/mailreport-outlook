@@ -1,4 +1,4 @@
-/* global document, localStorage, Office, setTimeout */
+/* global document, localStorage, Office, setTimeout, window */
 import { OfficeThemeId } from "./models";
 import { isMacOS, isOWA } from "./compat";
 
@@ -46,23 +46,45 @@ export function showView(selector: string) {
 }
 
 /**
- * Depending on availability of the Office.OfficeTheme interface,
+ * Depending on availability of the Office.OfficeTheme interface and running OS,
  * update DOM styles based on the currently selected theme.
  */
 export function applyTheme() {
   const $body = document.querySelector("body");
-  // Set base background color for Outlook without OfficeTheme support
-  $body.style.backgroundColor = "white";
-  if (isMacOS()) $body.style.backgroundColor = "#f1f1f0";
 
-  // Use localStorage as cache to pass the currently selected theme to dialogs
-  const cachedTheme = localStorage.getItem("mailreport-theme");
   let theme = Office.context.officeTheme;
-  if (theme === undefined) {
-    if (cachedTheme === null) return; // No OfficeTheme interface support
-    theme = JSON.parse(cachedTheme);
+  // Outlook on MacOS sets theme to '{}' or undefined (in dialogs) and
+  // renders in a light/dark style based on OS configuration.
+  // Therefore, we build matching themes manually.
+  if (isMacOS()) {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = {
+        themeId: OfficeThemeId.Black as unknown as Office.ThemeId,
+        bodyForegroundColor: "#acacac",
+        bodyBackgroundColor: "#1e1e1e",
+        controlBackgroundColor: null,
+        controlForegroundColor: null,
+        isDarkTheme: true,
+      };
+    } else {
+      theme = {
+        themeId: OfficeThemeId.White as unknown as Office.ThemeId,
+        bodyForegroundColor: null,
+        bodyBackgroundColor: "#f1f1f0",
+        controlBackgroundColor: null,
+        controlForegroundColor: null,
+        isDarkTheme: false,
+      };
+    }
+  } else {
+    // Use localStorage as cache to pass the currently selected app theme to dialogs.
+    const cachedTheme = localStorage.getItem("mailreport-theme");
+    if (theme === undefined) {
+      if (cachedTheme === null) return; // No OfficeTheme interface support
+      theme = JSON.parse(cachedTheme); // We are rendering a dialog
+    }
+    localStorage.setItem("mailreport-theme", JSON.stringify(theme)); // Update cache
   }
-  localStorage.setItem("mailreport-theme", JSON.stringify(theme)); // Update cache
 
   // Contrasting official docs, themeId is a string and Office.ThemeId is undefined on Outlook 2021 LTSC and 2024 LTSC.
   const selectedTheme = theme.themeId as unknown as OfficeThemeId;
@@ -70,6 +92,7 @@ export function applyTheme() {
   // Always set a solid background color to fix rendering issues on Outlook 2024 LTSC, which has a transparent background by default.
   $body.style.backgroundColor = theme.bodyBackgroundColor;
 
+  // Colorful and White themes don't require adjustments
   if (selectedTheme === OfficeThemeId.Colorful || selectedTheme === OfficeThemeId.White) return;
 
   document.querySelectorAll("label, label > span, p").forEach((e) => {
