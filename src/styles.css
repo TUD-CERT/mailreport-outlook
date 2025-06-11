@@ -39,6 +39,14 @@ body {
   margin: 0 8px 0 0;
 }
 
+body.macos-dark {
+  background-color: #1e1e1e;
+}
+
+body.macos-light {
+  background-color: #f1f1f0;
+}
+
 /* Fix dialog formatting in Outlook Desktop */
 body.mailreport-dialog {
   margin: 0 1rem 1rem 1rem;

@@ -55,26 +55,31 @@ export function applyTheme() {
   let theme = Office.context.officeTheme;
   // Outlook on MacOS sets theme to '{}' or undefined (in dialogs) and
   // renders in a light/dark style based on OS configuration.
-  // Therefore, we build matching themes manually.
+  // Therefore, build matching themes manually.
+  // Since fabric dropdowns on MacOS improperly overwrite styles on <body>,
+  // set the background via a CSS class. On all other platforms, set body.background-color
+  // dynamically to a value provided by the Office.OfficeTheme interface.
   if (isMacOS()) {
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
       theme = {
         themeId: OfficeThemeId.Black as unknown as Office.ThemeId,
         bodyForegroundColor: "#acacac",
-        bodyBackgroundColor: "#1e1e1e",
+        bodyBackgroundColor: null,
         controlBackgroundColor: null,
         controlForegroundColor: null,
         isDarkTheme: true,
       };
+      $body.classList.add("macos-dark");
     } else {
       theme = {
         themeId: OfficeThemeId.White as unknown as Office.ThemeId,
         bodyForegroundColor: null,
-        bodyBackgroundColor: "#f1f1f0",
+        bodyBackgroundColor: null,
         controlBackgroundColor: null,
         controlForegroundColor: null,
         isDarkTheme: false,
       };
+      $body.classList.add("macos-light");
     }
   } else {
     // Use localStorage as cache to pass the currently selected app theme to dialogs.
