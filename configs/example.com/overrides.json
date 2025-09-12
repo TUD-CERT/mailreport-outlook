@@ -6,14 +6,22 @@
         "hosted_at": "https://example.com"
     },
     "defaults": {
-        "smtp_to": "mailreport@example.com"
+        "lucy_client_id": 1,
+        "lucy_server": "example.com",
+        "permit_advanced_config": true,
+        "phishing_transport": "smtp",
+        "simulation_transport": "smtp",
+        "smtp_to": "report@example.com",
+        "smtp_use_expressive_subject": true
     },
     "locales": {
         "en": {
-            "reportCommentPrompt": "The E-Mail will be forwarded to your SOC."
+            "extensionName": "Phishing Report",
+            "extensionDescription": "Adds a phishing report button to the toolbar. This is just an example configuration, please create your own before deployment."
         },
         "de": {
-            "reportCommentPrompt": "Die E-Mail wird an Ihr SOC weitergeleitet."
+            "extensionName": "Phishing-Meldung",
+            "extensionDescription": "Fügt einen Phishing-Meldebutton zur Toolbar hinzu. Beispielkonfiguration aktiv, bitte erstellen Sie eine indiduelle Konfiguration vor dem Verteilen dieses Plugins."
         }
-    }
+  }
 }

@@ -38,7 +38,7 @@
   <DisableEntityHighlighting>false</DisableEntityHighlighting>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
     <Requirements>
-      <bt:Sets DefaultMinVersion="1.3">
+      <bt:Sets DefaultMinVersion="1.4">
         <bt:Set Name="Mailbox"/>
       </bt:Sets>
     </Requirements>
