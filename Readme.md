@@ -9,7 +9,7 @@ Microsoft Outlook Add-In for reporting phishing or otherwise malicious E-Mails t
 * User-provided optional comment for each report
 * Configurable after-report action: move to junk/move to bin/keep mail
 * Localization in English and German
-* Dark theme support
+* Respects selected UI theme
 * Quickly adjustable organization-specific deployment settings
 * Basic telemetry to report current add-in and MUA versions with each request
 * Permission settings to disable unwanted features
@@ -26,11 +26,11 @@ On the client side, this add-in has been tested successfully with the following 
 The project build system requires Node.js and npm.
 
 ## Technical Overview
-This Outlook add-in adds a button to either the Ribbon (Outlook on Desktop) or to the message-specific buttons shown when reading a message in Outlook on the web (Outlook Web App). When clicked, the currently selected mail can be reported either as being malicious or spam. A third option launches a settings dialogue. Reporting a malicious mail opens a task pane that enables users to attach an (optional) comment to their report. In contrast, reporting mails as spam happens immediately, doesn't open any views and can't be commented.
+This Outlook add-in adds a button to either the Ribbon (Outlook on Desktop) or to the message-specific buttons shown when reading a message in Outlook on the web (Outlook Web App). When clicked, the currently selected e-mail can be reported either as being malicious or spam. A third option launches a settings dialog. Reporting a malicious e-mail opens a task pane that enables users to attach an (optional) comment to their report. In contrast, reporting e-mails as spam happens immediately, doesn't open any views and can't be commented.
 
-Reports can be sent either via e-mail/SMTP to a configurable reporting address or to a server that provides a [Lucy](https://lucysecurity.com)-compatible API (or both). The subjects of reports sent via SMTP use either `Phishing Report` or `Spam Report` as prefix to differentiate between the reporting options. Attached comments and basic telemetry (if enabled) are prepended to the mail body, while a raw sample of the reported e-mail is added as an attachment. The Lucy API doesn't support spam reports.
+Reports can be sent either via e-mail/SMTP to a configurable reporting address or to a server that provides a [Lucy](https://lucysecurity.com)-compatible API (or both). The subjects of reports sent via SMTP use either `Phishing Report` or `Spam Report` as prefix to differentiate between the reporting options. Attached comments and basic telemetry (if enabled) are prepended to the e-mail body, while a raw sample of the reported e-mail is added as an attachment. The Lucy API doesn't support spam reports.
 
-If a Lucy-style phishing campaign is detected - which is based on certain header fields present in the reported e-mail - the Lucy server is notified of the report via HTTP(S) and a dialogue is shown to congratulate the reporter.
+If a Lucy-style phishing campaign is detected - which is based on certain header fields present in the reported e-mail - the Lucy server is notified of the report via HTTP(S) and a dialog is shown to congratulate the reporter.
 
 Since we strive to support a broad range of (older) Outlook versions that are still in use, the minimal required Mailbox API is 1.4. Due to many limitations in that old requirement set and the Outlook JavaScript API for on-premises Exchange/Outlook environments in general, missing functionality is implemented via EWS requests.
 
@@ -74,7 +74,7 @@ To define values for the add-in's manifest file, which holds metadata such as th
 
 The add-in name and description are both set by overwriting their localizations strings. For an example, look further below.
 
-The add-in's default configuration is kept in `templates/defaults.tpl` and can be overwritten in `overrides.json` within the top-level key `defaults`. Most of these settings can also be adjusted by users in the add-in configuration dialogue from within Outlook. The following keys are essential for proper operation and should be reviewed thoroughly:
+The add-in's default configuration is kept in `templates/defaults.tpl` and can be overwritten in `overrides.json` within the top-level key `defaults`. Most of these settings can also be adjusted by users in the add-in configuration dialog from within Outlook. The following keys are essential for proper operation and should be reviewed thoroughly:
 
 * **phishing_transport**: Defines which protocol(s) to use when reporting mails.
   * `"http"`: Send reports via HTTP(S) to a Lucy-compatible API.
@@ -92,7 +92,7 @@ The remaining supported keys in `defaults` are
   * `"keep"`: Do nothing, keep it.
 * **smtp_use_expressive_subject**: Determines which subject line to use when sending SMTP reports. If set to `false`, reports will simply use *Phishing Report* or *Spam Report* as subject lines. With this set to `true`, the subject line of the reported e-mail will be appended as well (e.g. *Phishing Report: Re: Urgent Letter*).
 * **send_telemetry**: If set to `true`, this includes two header fields `Reporting-Agent` and `Reporting-Plugin` set to the current MUA and add-in identifier/version to all outgoing requests: Either as HTTP(S) header or preptended to the e-mail body. To disable, set to `false`. This setting can *not* be changed from within Outlook.
-* **permit_advanced_config**: If set to `true`, users can modify `phishing_transport`, `simulation_transport`, `lucy_client_id`, `lucy_server`, `smtp_to`, `smtp_use_expressive_subject` and `update_url` from within Thunderbird (via *"Show advanced settings"* in the add-in's configuration dialogue). Set to `false` so that user can only change the `report_action`. This setting can *not* be changed from within Outlook. **Notice**: This setting determines which options are stored locally within the MUA. If however this is set to `false`, future updates can transparently update the advanced settings (e.g. by switching to another SMTP reporting address). If this is set to `true`, all advanced settings are handled manually by users. Changing the SMTP reporting address would then require either a full redeployment of the add-in, ideally with a new identifier (to clear the local storage), or user's to manually update these settings.
+* **permit_advanced_config**: If set to `true`, users can modify `phishing_transport`, `simulation_transport`, `lucy_client_id`, `lucy_server`, `smtp_to`, `smtp_use_expressive_subject` and `update_url` from within Thunderbird (via *"Show advanced settings"* in the add-in's configuration dialog). Set to `false` so that user can only change the `report_action`. This setting can *not* be changed from within Outlook. **Notice**: This setting determines which options are stored locally within the MUA. If however this is set to `false`, future updates can transparently update the advanced settings (e.g. by switching to another SMTP reporting address). If this is set to `true`, all advanced settings are handled manually by users. Changing the SMTP reporting address would then require either a full redeployment of the add-in, ideally with a new identifier (to clear the local storage), or user's to manually update these settings.
 
 Organizations can also overwrite individual localization strings from `templates/locales/` via the top-level key `locales`. For example:
 
