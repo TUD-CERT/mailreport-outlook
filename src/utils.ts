@@ -1,5 +1,5 @@
 /* global document, localStorage, Office, setTimeout, window */
-import { OfficeThemeId } from "./models";
+import { OfficeThemeId, Settings } from "./models";
 import { isMacOS, isOWA } from "./compat";
 
 /**
@@ -119,4 +119,22 @@ export function applyTheme() {
         break;
     }
   });
+}
+
+/**
+ * Returns an object with telemetry headers to send with requests.
+ * Whether any headers are returned depends on the current plugin settings.
+ */
+export function generateTelemetryHeaders(settings: Settings) {
+  const headers: { [key: string]: any } = {};
+  if (settings.send_telemetry) {
+    const platform =
+      Office.context.diagnostics === undefined
+        ? ""
+        : ` @ ${Office.context.diagnostics.platform === Office.PlatformType.PC ? "Windows" : Office.context.diagnostics.platform}`;
+    headers["Reporting-Agent"] =
+      `${Office.context.mailbox.diagnostics.hostName}/${Office.context.mailbox.diagnostics.hostVersion}${platform}`;
+    headers["Reporting-Plugin"] = settings.plugin_id;
+  }
+  return headers;
 }

@@ -3,6 +3,7 @@ import { BodyType, Message, ReportResultStatus, Transport } from "./models";
 import { fetchMessage, moveMessageTo, sendSMTPReport } from "./ews";
 import { ReportAction, ReportResult, Settings } from "./models";
 import { getSettings } from "./settings";
+import { generateTelemetryHeaders } from "./utils";
 import "whatwg-fetch";
 
 async function parseMessage(email: Office.MessageRead): Promise<Message> {
@@ -122,22 +123,6 @@ async function sendHTTPReport(
   return success;
 }
 
-/**
- * Returns an object with additional telemetry headers to send with each request
- * (derived from current plugin settings).
- */
-function getAdditionalHeaders() {
-  const headers: { [key: string]: any } = {},
-    settings = getSettings();
-  if (settings.send_telemetry) {
-    const platform = Office.context.diagnostics === undefined ? "" : ` @ ${Office.context.diagnostics.platform}`;
-    headers["Reporting-Agent"] =
-      `${Office.context.mailbox.diagnostics.hostName}/${Office.context.mailbox.diagnostics.hostVersion}${platform}`;
-    headers["Reporting-Plugin"] = settings.plugin_id;
-  }
-  return headers;
-}
-
 export async function reportFraud(mail: Office.MessageRead, comment: string): Promise<ReportResult> {
   let message: Message,
     isSimulation: boolean,
@@ -151,7 +136,7 @@ export async function reportFraud(mail: Office.MessageRead, comment: string): Pr
     settings = getSettings();
     transport = isSimulation ? settings.simulation_transport : settings.phishing_transport;
     parsedComment = comment.length > 0 ? comment : null;
-    additionalHeaders = getAdditionalHeaders();
+    additionalHeaders = generateTelemetryHeaders(settings);
 
     if (transport === Transport.HTTP || transport === Transport.HTTPSMTP) {
       let lucyReportURL = `https://${settings.lucy_server}/phishing-report`;
@@ -197,7 +182,7 @@ export async function reportSpam(mail: Office.MessageRead): Promise<ReportResult
     message = await parseMessage(mail);
     settings = getSettings();
     transport = settings.phishing_transport;
-    additionalHeaders = getAdditionalHeaders();
+    additionalHeaders = generateTelemetryHeaders(settings);
 
     if (belongsToSimulation(message)) {
       const result = await reportFraud(mail, "");
