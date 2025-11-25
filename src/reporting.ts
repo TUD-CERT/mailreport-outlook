@@ -35,6 +35,7 @@ async function parseMessage(email: Office.MessageRead): Promise<Message> {
   result.to = email.to
     .map((v) => (v.displayName.length > 0 ? `${v.displayName} <${v.emailAddress}>` : v.emailAddress))
     .join(", ");
+  result.reporter = Office.context.mailbox.userProfile.emailAddress;
   result.date = email.dateTimeCreated;
   result.subject = email.subject;
   result.preview = htmlContent;
@@ -79,14 +80,13 @@ function getScenarioID(message: Message): string | null {
  */
 async function sendHTTPReport(
   urls: string[],
-  reporterAddress: string,
   message: Message,
   additionalHeaders: { [key: string]: string },
   lucyScenarioID: string | null = null,
   comment: string | null = null
 ) {
   const lucyReport: { [key: string]: any } = {
-    email: reporterAddress,
+    email: message.reporter,
     mail_content: message.raw,
     more_analysis: comment !== null,
     disable_incident_autoresponder: false,
@@ -100,11 +100,11 @@ async function sendHTTPReport(
         "Reporting simulation for scenario ",
         lucyScenarioID,
         " as ",
-        reporterAddress,
+        message.reporter,
         " via HTTP(S) to ",
         url
       );
-    else console.log("Sending report as ", reporterAddress, " via HTTP(S) to ", url);
+    else console.log("Sending report as ", message.reporter, " via HTTP(S) to ", url);
     // Send report
     try {
       await window.fetch(url, {
@@ -145,14 +145,7 @@ export async function reportFraud(mail: Office.MessageRead, comment: string): Pr
       let urls = isSimulation ? getReportingURLs(message) : [lucyReportURL];
       // If invalid Lucy headers are set, fall back to the configured Lucy instance
       if (urls.length === 0) urls = [lucyReportURL];
-      await sendHTTPReport(
-        urls,
-        Office.context.mailbox.userProfile.emailAddress,
-        message,
-        additionalHeaders,
-        lucyScenarioID,
-        parsedComment
-      );
+      await sendHTTPReport(urls, message, additionalHeaders, lucyScenarioID, parsedComment);
     }
     if (transport === Transport.SMTP || transport === Transport.HTTPSMTP) {
       let subject = "Phishing Report";

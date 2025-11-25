@@ -42,14 +42,15 @@ export class Settings {
 }
 
 export class Message {
-  from: string;
-  to: string;
-  date: Date;
-  subject: string;
-  headers: object; // {key: [val1, val2, ...]} with lowercase keys
-  preview: string;
-  previewType: BodyType;
-  raw: string;
+  from: string;           // Sender of this message according to its own headers
+  to: string;             // Receivers of this message according to its own headers
+  reporter: string;       // E-Mail address of the account that reported this message
+  date: Date;             // Date and time of the reported message
+  subject: string;        // Parsed subject of the reported message
+  headers: object;        // Header section of the repoted message as {key: [val1, val2, ...]} with lowercase keys
+  preview: string;        // Preview of the reported message, typically just HTML or PLAIN body content
+  previewType: BodyType;  // Specifies whether the preview is in HTML or PLAIN format
+  raw: string;            // Raw bytes of the reported message
 }
 
 export class ReportResult {
