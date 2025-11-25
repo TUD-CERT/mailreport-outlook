@@ -23,7 +23,7 @@
     "optionsActionJunk": "move it to the junk folder",
     "optionsActionTrash": "delete it (move to the trash folder)",
     "optionsActionKeep": "keep it",
-    "optionsPhishingTransportLabel": "Send phishing reports via",
+    "optionsFraudSpamTransportLabel": "Send fraud/spam reports via",
     "optionsSimulationTransportLabel": "Send simulation reports via",
     "optionsLucyServerLabel": "Lucy Server",
     "optionsSMTPRecipientLabel": "E-Mail address to send reports to",
