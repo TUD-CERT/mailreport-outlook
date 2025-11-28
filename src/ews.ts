@@ -31,8 +31,8 @@ export async function fetchMessage(ewsId: string) {
     "</soap:Envelope>";
   return await new Promise<{ raw: string; headers: object }>((resolve, reject) => {
     Office.context.mailbox.makeEwsRequestAsync(request, function (result) {
-      if (result.value === undefined || result.value.length === 0) {
-        reject("EWS error");
+      if (result.status === Office.AsyncResultStatus.Failed) {
+        reject(`Error ${result.error.code} (${result.error.name}) in ews.fetchMessage(): ${result.error.message}`);
         return;
       }
       const parser = new DOMParser(),
@@ -106,8 +106,12 @@ export async function sendSMTPReport(
     "    </m:CreateItem>" +
     "  </soap:Body>" +
     "</soap:Envelope>";
-  return await new Promise<boolean>((resolve) => {
+  return await new Promise<boolean>((resolve, reject) => {
     Office.context.mailbox.makeEwsRequestAsync(request, function (result) {
+      if (result.status === Office.AsyncResultStatus.Failed) {
+        reject(`Error ${result.error.code} (${result.error.name}) in ews.sendSMTPReport(): ${result.error.message}`);
+        return;
+      }
       const parser = new DOMParser();
       const doc = parser.parseFromString(result.value, "text/xml");
       const values = doc.getElementsByTagName("m:ResponseCode");
@@ -144,8 +148,12 @@ export async function moveMessageTo(email: Office.MessageRead, folder: ReportAct
     "    </m:MoveItem>" +
     "  </soap:Body>" +
     "</soap:Envelope>";
-  return await new Promise<boolean>((resolve) => {
+  return await new Promise<boolean>((resolve, reject) => {
     Office.context.mailbox.makeEwsRequestAsync(request, function (result) {
+      if (result.status === Office.AsyncResultStatus.Failed) {
+        reject(`Error ${result.error.code} (${result.error.name}) in ews.moveMessageTo(): ${result.error.message}`);
+        return;
+      }
       const parser = new DOMParser();
       const doc = parser.parseFromString(result.value, "text/xml");
       const values = doc.getElementsByTagName("m:ResponseCode");
