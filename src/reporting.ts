@@ -36,7 +36,8 @@ async function parseMessage(email: Office.MessageRead): Promise<Message> {
     .map((v) => (v.displayName.length > 0 ? `${v.displayName} <${v.emailAddress}>` : v.emailAddress))
     .join(", ");
   result.reporter = Office.context.mailbox.userProfile.emailAddress;
-  result.date = email.dateTimeCreated;
+  // Fall back to dateTimeModified in case dateTimeCreated is undefined (seen on macOS)
+  result.date = email.dateTimeCreated !== undefined ? email.dateTimeCreated : email.dateTimeModified;
   result.subject = email.subject;
   result.preview = htmlContent;
   result.previewType = BodyType.HTML;
