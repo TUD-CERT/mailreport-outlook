@@ -77,6 +77,7 @@ export async function sendSMTPReport(
       bodyXML = `<t:Body BodyType="HTML"><![CDATA[${lucyClientBody}${commentBody}${lucyCIBody}${objToStr(additionalHeaders, "<br />")}<br /><br />From: ${encodeHTML(message.from)}<br />Sent: ${encodeHTML(message.date.toString())}<br />To: ${encodeHTML(message.to)}<br />Subject: ${encodeHTML(message.subject)}<br /><br />${message.preview}]]></t:Body>`;
       break;
   }
+  console.log("Reporting selected mail via SMTP as ", message.reporter, " to ", destination);
   const request =
     '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages" xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">' +
     '  <soap:Header><t:RequestServerVersion Version="Exchange2013" /></soap:Header>' +
