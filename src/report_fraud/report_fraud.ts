@@ -1,7 +1,8 @@
 /* global document, HTMLParagraphElement, HTMLTextAreaElement, Office */
 import { isOutlook2016 } from "../compat";
+import { moveMessageTo } from "../ews";
 import { localizeToken, localizeDocument } from "../i18n";
-import { ReportAction, ReportResultStatus } from "../models";
+import { MoveMessageStatus, ReportAction, ReportResultStatus } from "../models";
 import { reportFraud } from "../reporting";
 import { getSettings } from "../settings";
 import { showSimulationAcknowledgement } from "../simulation";
@@ -9,9 +10,10 @@ import { applyTheme, fixTaskPanePadding, showView, sleep } from "../utils";
 
 async function handleFraudReport() {
   showView("#mailreport-fraud-pending");
-  const comment = (<HTMLTextAreaElement>document.getElementById("reportComment")).value;
-  const reportResult = await reportFraud(Office.context.mailbox.item, comment);
-  switch (reportResult.status) {
+  const comment = (<HTMLTextAreaElement>document.getElementById("reportComment")).value,
+    mail = Office.context.mailbox.item,
+    reportResult = await reportFraud(mail, comment);
+  switch (reportResult.reportStatus) {
     case ReportResultStatus.SUCCESS:
       showView("#mailreport-fraud-success");
       await sleep(2000);
@@ -25,6 +27,10 @@ async function handleFraudReport() {
         reportResult.diagnosis;
       return; // Do not close this view automatically
   }
+  // Move message after we have slept or the user has closed the sim ack dialog.
+  // If we had moved it earlier, the task pane and dialog would close immediately.
+  if (reportResult.moveMessageStatus === MoveMessageStatus.PENDING)
+    reportResult.moveMessageStatus = await moveMessageTo(mail, reportResult.moveMessageTarget);
   if (isOutlook2016()) {
     showView("#mailreport-fraud-close");
     return;

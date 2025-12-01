@@ -1,7 +1,15 @@
 /* global console, Office, window */
-import { BodyType, Message, ReportResultStatus, Transport } from "./models";
-import { fetchMessage, moveMessageTo, sendSMTPReport } from "./ews";
-import { ReportAction, ReportResult, Settings } from "./models";
+import { fetchMessage, sendSMTPReport } from "./ews";
+import {
+  BodyType,
+  Message,
+  MoveMessageStatus,
+  ReportAction,
+  ReportResult,
+  ReportResultStatus,
+  Settings,
+  Transport,
+} from "./models";
 import { getSettings } from "./settings";
 import { generateTelemetryHeaders } from "./utils";
 import "whatwg-fetch";
@@ -160,11 +168,11 @@ export async function reportFraud(mail: Office.MessageRead, comment: string): Pr
         parsedComment
       );
     }
-    await moveMessageTo(mail, settings.report_action);
-    if (isSimulation) return new ReportResult(ReportResultStatus.SIMULATION);
-    return new ReportResult(ReportResultStatus.SUCCESS);
+    if (isSimulation)
+      return new ReportResult(ReportResultStatus.SIMULATION, MoveMessageStatus.PENDING, settings.report_action);
+    return new ReportResult(ReportResultStatus.SUCCESS, MoveMessageStatus.PENDING, settings.report_action);
   } catch (err) {
-    const result = new ReportResult(ReportResultStatus.ERROR);
+    const result = new ReportResult(ReportResultStatus.ERROR, MoveMessageStatus.NONE, ReportAction.KEEP);
     result.diagnosis = err.toString();
     return result;
   }
@@ -181,21 +189,20 @@ export async function reportSpam(mail: Office.MessageRead): Promise<ReportResult
     if (belongsToSimulation(message)) {
       const result = await reportFraud(mail, "");
       // Users expect reported spam mails to be moved away even if ReportAction is KEEP
-      if (settings.report_action === ReportAction.KEEP) await moveMessageTo(mail, ReportAction.JUNK);
+      if (settings.report_action === ReportAction.KEEP) result.moveMessageTarget = ReportAction.JUNK;
       return result;
     }
     if (transport === Transport.HTTP) {
-      const result = new ReportResult(ReportResultStatus.ERROR);
+      const result = new ReportResult(ReportResultStatus.ERROR, MoveMessageStatus.NONE, ReportAction.KEEP);
       result.diagnosis = "HTTP endpoint does not support spam reports";
       return result;
     }
     let subject = "Spam Report";
     if (settings.smtp_use_expressive_subject) subject += `: ${message.subject}`;
     await sendSMTPReport(settings.smtp_to, subject, settings.lucy_client_id, message, additionalHeaders, null);
-    await moveMessageTo(mail, ReportAction.JUNK);
-    return new ReportResult(ReportResultStatus.SUCCESS);
+    return new ReportResult(ReportResultStatus.SUCCESS, MoveMessageStatus.PENDING, ReportAction.JUNK);
   } catch (err) {
-    const result = new ReportResult(ReportResultStatus.ERROR);
+    const result = new ReportResult(ReportResultStatus.ERROR, MoveMessageStatus.NONE, ReportAction.KEEP);
     result.diagnosis = err.toString();
     return result;
   }

@@ -1,5 +1,5 @@
 /* global console, DOMParser, Office */
-import { BodyType, Message, ReportAction } from "./models";
+import { BodyType, Message, MoveMessageStatus, ReportAction } from "./models";
 import { encodeHTML, objToStr } from "./utils";
 
 /**
@@ -132,7 +132,7 @@ export async function moveMessageTo(email: Office.MessageRead, folder: ReportAct
       folderId = "deleteditems";
       break;
     case ReportAction.KEEP:
-      return true;
+      return MoveMessageStatus.SUCCESS;
   }
   console.log(`Moving message ${email.itemId} to ${folder} folder`);
   const request =
@@ -149,7 +149,7 @@ export async function moveMessageTo(email: Office.MessageRead, folder: ReportAct
     "    </m:MoveItem>" +
     "  </soap:Body>" +
     "</soap:Envelope>";
-  return await new Promise<boolean>((resolve, reject) => {
+  return await new Promise<MoveMessageStatus>((resolve, reject) => {
     Office.context.mailbox.makeEwsRequestAsync(request, function (result) {
       if (result.status === Office.AsyncResultStatus.Failed) {
         reject(`Error ${result.error.code} (${result.error.name}) in ews.moveMessageTo(): ${result.error.message}`);
@@ -158,8 +158,8 @@ export async function moveMessageTo(email: Office.MessageRead, folder: ReportAct
       const parser = new DOMParser();
       const doc = parser.parseFromString(result.value, "text/xml");
       const values = doc.getElementsByTagName("m:ResponseCode");
-      if (values[0].textContent === "NoError") resolve(true);
-      else resolve(false);
+      if (values[0].textContent === "NoError") resolve(MoveMessageStatus.SUCCESS);
+      else resolve(MoveMessageStatus.ERROR);
     });
   });
 }

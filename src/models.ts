@@ -15,6 +15,13 @@ export enum ReportResultStatus {
   ERROR,
 }
 
+export enum MoveMessageStatus {
+  NONE,     // No attempt to move the message has been made due to prior errors
+  PENDING,  // Move message operation hasn't been attempted yet, but is scheduled
+  SUCCESS,  // Message has been moved successfully
+  ERROR,    // EWS error
+}
+
 export enum Transport {
   HTTP = "http",
   SMTP = "smtp",
@@ -54,10 +61,14 @@ export class Message {
 }
 
 export class ReportResult {
-  status: ReportResultStatus;
+  reportStatus: ReportResultStatus;
+  moveMessageStatus: MoveMessageStatus;
+  moveMessageTarget: ReportAction;
   diagnosis: string;
 
-  constructor(status: ReportResultStatus) {
-    this.status = status;
+  constructor(reportStatus: ReportResultStatus, moveMessageStatus: MoveMessageStatus, moveMessageTarget: ReportAction) {
+    this.reportStatus = reportStatus;
+    this.moveMessageStatus = moveMessageStatus;
+    this.moveMessageTarget = moveMessageTarget;
   }
 }

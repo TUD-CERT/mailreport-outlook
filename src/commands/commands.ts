@@ -1,5 +1,6 @@
 /* global Office, window */
-import { ReportResultStatus } from "../models";
+import { moveMessageTo } from "../ews";
+import { MoveMessageStatus, ReportResultStatus } from "../models";
 import { reportSpam } from "../reporting";
 import { showSimulationAcknowledgement } from "../simulation";
 import URI from "urijs";
@@ -22,9 +23,9 @@ async function showErrorDialog(diagnosis: string) {
 }
 
 async function handleSpamReport(event: Office.AddinCommands.Event) {
-  const reportResult = await reportSpam(Office.context.mailbox.item);
-
-  switch (reportResult.status) {
+  const mail = Office.context.mailbox.item,
+    reportResult = await reportSpam(mail);
+  switch (reportResult.reportStatus) {
     case ReportResultStatus.SIMULATION:
       await showSimulationAcknowledgement();
       break;
@@ -32,6 +33,10 @@ async function handleSpamReport(event: Office.AddinCommands.Event) {
       await showErrorDialog(reportResult.diagnosis);
       break;
   }
+  // Move message after the user has closed any potential dialogs.
+  // If we had moved it earlier, any spawned dialog would close immediately.
+  if (reportResult.moveMessageStatus === MoveMessageStatus.PENDING)
+    reportResult.moveMessageStatus = await moveMessageTo(mail, reportResult.moveMessageTarget);
   event.completed();
 }
 
