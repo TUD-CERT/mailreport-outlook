@@ -85,7 +85,7 @@ function getScenarioID(message: Message): string | null {
 
 /**
  * Tries to send HTTP messages to the given Lucy URLs until one succeeds.
- * Returns a boolean to indicate whether the report was successful.
+ * Throws an exception in case none succeeded.
  */
 async function sendHTTPReport(
   urls: string[],
@@ -102,7 +102,7 @@ async function sendHTTPReport(
     enable_comment_to_deeper_analysis_request: comment === null ? "" : comment,
   };
   if (lucyScenarioID !== null) lucyReport.scenario_id = lucyScenarioID;
-  let success = false;
+  let lastSendException = null;
   for (let url of urls) {
     if ("scenario_id" in lucyReport)
       console.log(
@@ -122,14 +122,14 @@ async function sendHTTPReport(
         headers: { "Content-Type": "text/plain; Charset=UTF-8", ...additionalHeaders }, // Content-Type taken from the Lucy Outlook AddIn
         body: JSON.stringify(lucyReport),
       });
-      success = true;
+      lastSendException = null;
       break;
     } catch (err) {
       console.log("Could not send report via HTTP(S)", err);
-      throw err;
+      lastSendException = err;
     }
   }
-  return success;
+  if (lastSendException !== null) throw lastSendException;
 }
 
 export async function reportFraud(mail: Office.MessageRead, comment: string): Promise<ReportResult> {
