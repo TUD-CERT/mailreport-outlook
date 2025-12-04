@@ -100,7 +100,7 @@ module.exports = async (env, options) => {
   }
 
   const config = {
-    devtool: "source-map",
+    devtool: isDev ? "source-map" : false,
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       report_fraud: "./src/report_fraud/report_fraud.ts",
