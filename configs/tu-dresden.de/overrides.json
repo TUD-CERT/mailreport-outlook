@@ -2,7 +2,7 @@
     "manifest": {
         "id": "a18ace8e-5e8e-4184-9a74-164203af8c77",
         "provider_name": "TUD-CERT",
-        "version": "25.06.20.1",
+        "version": "26.03.05.1",
         "hosted_at": "https://mailsecurity.cert.tu-dresden.de/outlook-plugin"
     },
     "defaults": {
@@ -17,12 +17,12 @@
     "locales": {
         "en": {
             "extensionName": "Phishing Report",
-            "extensionDescription": "Enables reporting of suspicious e-mails to TUD-CERT. This Add-In is in a TEST PHASE. Please send feedback or issues to cert@tu-dresden.de",
+            "extensionDescription": "Enables reporting of suspicious e-mails to TUD-CERT. Please send feedback or issues to cert@tu-dresden.de",
             "reportCommentPrompt": "The selected E-Mail will be forwarded to TUD-CERT."
         },
         "de": {
             "extensionName": "Phishing Report",
-            "extensionDescription": "Ermöglicht das Melden auffälliger E-Mails an das TUD-CERT. Dieses Add-In befindet sich in der TESTPHASE. Bitte senden Sie Feedback oder Probleme an cert@tu-dresden.de",
+            "extensionDescription": "Ermöglicht das Melden auffälliger E-Mails an das TUD-CERT. Bitte senden Sie Feedback oder Probleme an cert@tu-dresden.de",
             "reportCommentPrompt": "Die markierte E-Mail wird an das TUD-CERT weitergeleitet."
         }
     }
