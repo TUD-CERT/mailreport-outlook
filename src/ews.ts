@@ -1,6 +1,6 @@
 /* global console, DOMParser, Office */
 import { BodyType, Message, MoveMessageStatus, ReportAction } from "./models";
-import { encodeHTML, objToStr } from "./utils";
+import { encodeHTML, encodeXML, objToStr } from "./utils";
 
 /**
  * Functionality implemented via legacy EWS due to missing equivalent methods
@@ -88,7 +88,7 @@ export async function sendSMTPReport(
     "      </m:SavedItemFolderId>" +
     "      <m:Items>" +
     "        <t:Message>" +
-    `          <t:Subject>${subject}</t:Subject>` +
+    `          <t:Subject>${encodeXML(subject)}</t:Subject>` +
     `          ${bodyXML}` +
     "          <t:Attachments>" +
     "            <t:FileAttachment>" +

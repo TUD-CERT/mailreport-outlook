@@ -11,6 +11,13 @@ export function encodeHTML(str: string): string {
 }
 
 /**
+ * Encodes various characters to their safe XML counterparts.
+ */
+export function encodeXML(str: string): string {
+  return encodeHTML(str).replace(/'/g, "&apos;");
+}
+
+/**
  * In case we're running inside Outlook Web App (OWA) or on Mac, add some
  * padding to the task pane content to match the padding of the Windows desktop versions.
  */
